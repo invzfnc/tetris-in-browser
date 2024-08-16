@@ -1,0 +1,20 @@
+# executables
+*.exe
+*.o
+*.out
+
+# vscode configuration files
+.vscode/
+
+# vim files
+Session.vim
+*.swp
+
+# Obsidian configuration files
+.obsidian
+
+# debug folder
+Debug/
+
+# custom
+ignore/
