@@ -23,9 +23,9 @@ const sTetromino = [
 
 const zTetrimino = [
     [width,width+1,width*2+1,width*2+2], // 0
-    [width+1,width*2+1,2,width+2], // 1
+    [width*2,width,width+1,1], // 1
     [width,width+1,width*2+1,width*2+2], // 2
-    [width+1,width*2+1,2,width+2] // 3
+    [width*2,width,width+1,1] // 3
 ]
 
 const tTetromino = [
@@ -78,11 +78,79 @@ function undraw() {
 
 draw();
 
+let currentGridPosX = currentPosition;
+let currentGridPosY = 0;
+
+// Tetromino movement
+console.log(currentPosition);
+
+function control(input){
+    if (input.keyCode == 40){
+        moveDown();
+    }
+    if (input.keyCode == 37){
+        moveLeft();
+    }
+    if (input.keyCode == 39){
+        moveRight();
+    }
+    console.log(currentPosition);
+    console.log("Current gridX: " + currentGridPosX);
+    console.log("Current gridY: " + currentGridPosY);
+}
+
+document.addEventListener('keydown', control);
+
+//Temporary solution to move blocks, prob need to somehow reduce amount of draw functions.
 
 
+function moveDown(){
+    undraw();
+    if (currentGridPosY < 18){
+        currentPosition += 10;
+        currentGridPosY++;
+    }
+    
+    draw(); 
+}
+
+function moveLeft(){
+    undraw();
+    if (currentGridPosX > 0){
+        currentPosition -= 1;
+        currentGridPosX--;
+    }
+    draw();
+}
+
+function moveRight(){
+    undraw();
+    if (currentGridPosX < 7){
+        currentPosition += 1;
+        currentGridPosX++;
+    }
+    draw();
+}
 
 
+function getCurrentLevel(){
+    let currentLevel = 0;
+    if (currentPosition < 10)
+        currentLevel = currentPosition;
+    else if (currentPosition >= 10)
+        currentLevel = currentPosition - 10;
 
+    return currentLevel;
+}
 
 
 })
+
+// 18/8/24
+// Fixed Ztetrimino not aligned within grid
+// Added down, left and right movement
+// Added temp solution to contain tetriminos in the game area (read note)
+
+// Note: Every block has their own unique grid limit,
+// in order to contain the blocks within the game area,
+// you need to get obtain each block's X and Y grid limits (limit to which they can move to the edge of the game area)
