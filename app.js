@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+// Implementation guidelines
+// https://tetris.fandom.com/wiki/Tetris_Guideline
+// https://tetris.fandom.com/wiki/Playfield
+
 // https://stackoverflow.com/a/64802566
 function drawGrid(width, height) {
     let playfield = document.getElementById("playfield");
