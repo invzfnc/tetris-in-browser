@@ -10,6 +10,17 @@ body {
     display: flex;
 }
 
+div.canvas {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #playfield {
     border: 1px solid grey;
+    z-index: 1;
+}
+
+#grids {
+    position: absolute;
+    z-index: 0;
 }

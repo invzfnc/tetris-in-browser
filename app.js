@@ -7,7 +7,23 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 let playfield = document.getElementById("playfield");
-let ctx = playfield.getContext("2d");
+let ctx_playfield = playfield.getContext("2d");
+
+let grids = document.getElementById("grids");
+let ctx_grids = grids.getContext("2d");
+
+// 10*24 grids with each of them sized 35
+const gridSize = 35;
+const gridRows = 24;
+const gridColumns = 10;
+
+// sets width and height of both canvas
+grids.width = gridColumns * gridSize;
+grids.height = gridRows * gridSize;
+
+playfield.width = gridColumns * gridSize;
+playfield.height = gridRows * gridSize;
+
 
 // https://tetris.fandom.com/wiki/SRS
 // tetrominos shape matrix
@@ -68,15 +84,12 @@ const colors = {
 
 // how to draw grids on canva: https://stackoverflow.com/a/64802566
 // how the playfield should be: https://tetris.fandom.com/wiki/Playfield
-function drawGrid(width, height) {
-    playfield.width = width * gridSize;
-    playfield.height = height * gridSize;
+function drawGrid() {
+    ctx_grids.strokeStyle = "grey";
 
-    ctx.strokeStyle = "grey";
-
-    for (let x = 0; x <= playfield.width; x += gridSize) {
-        for (let y = 0; y <= playfield.height; y += gridSize)
-            ctx.strokeRect(x, y, gridSize, gridSize);
+    for (let x = 0; x <= grids.width; x += gridSize) {
+        for (let y = 0; y <= grids.height; y += gridSize)
+            ctx_grids.strokeRect(x, y, gridSize, gridSize);
     }
 }
 
@@ -92,20 +105,17 @@ function getTetrominoByName(name) {
 
 // draws specific tetromino on screen (given input like "I", "Z")
 function drawTetromino(tetromino) {
-    ctx.fillStyle = tetromino.color;
+    ctx_playfield.fillStyle = tetromino.color;
     for (let row = 0; row < tetromino.matrix.length; row++) {
         for (let col = 0; col < tetromino.matrix[row].length; col++) {
             if (tetromino.matrix[row][col]) {
-                ctx.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
+                ctx_playfield.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
             }
         }
     }
 }
 
-// 10*24 grids with each of them sized 35
-const gridSize = 35;
-drawGrid(10, 24);
-
+drawGrid();
 drawTetromino(getTetrominoByName("L"));
 
 })
