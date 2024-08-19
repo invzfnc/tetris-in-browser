@@ -4,6 +4,63 @@ document.addEventListener("DOMContentLoaded", () => {
 // https://tetris.fandom.com/wiki/Tetris_Guideline
 // https://tetris.fandom.com/wiki/Playfield
 
+// https://tetris.fandom.com/wiki/SRS
+// tetrominos shape matrix
+const tetrominos = {
+    "I": [
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ],
+
+    "J": [
+        [1, 0, 0],
+        [1, 1, 1],
+        [0, 0, 0]
+    ],
+
+    "L": [
+        [0, 0, 1],
+        [1, 1, 1],
+        [0, 0, 0]
+    ],
+
+    "O": [
+        [1, 1],
+        [1, 1]
+    ],
+
+    "S": [
+        [0, 1, 1],
+        [1, 1, 0],
+        [0, 0, 0]
+    ],
+
+    "T": [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0]
+    ],
+
+    "Z": [
+        [1, 1, 0],
+        [0, 1, 1],
+        [0, 0, 0]
+    ]
+}
+
+// tetrominos colors
+const colors = {
+    "I": "cyan",
+    "J": "blue",
+    "L": "orange",
+    "O": "yellow",
+    "S": "green",
+    "T": "purple",
+    "Z": "red"
+}
+
 // https://stackoverflow.com/a/64802566
 function drawGrid(width, height) {
     let playfield = document.getElementById("playfield");
