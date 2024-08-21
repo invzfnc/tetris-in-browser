@@ -12,9 +12,9 @@ let ctx_playfield = playfield.getContext("2d");
 let grids = document.getElementById("grids");
 let ctx_grids = grids.getContext("2d");
 
-// 10*24 grids with each of them sized 35
+// 10*20 grids with each of them sized 35
 const gridSize = 35;
-const gridRows = 24;
+const gridRows = 20;
 const gridColumns = 10;
 
 // sets width and height of both canvas
@@ -23,7 +23,6 @@ grids.height = gridRows * gridSize;
 
 playfield.width = gridColumns * gridSize;
 playfield.height = gridRows * gridSize;
-
 
 // https://tetris.fandom.com/wiki/SRS
 // tetrominos shape matrix
@@ -104,18 +103,53 @@ function getTetrominoByName(name) {
 }
 
 // draws specific tetromino on screen (given input like "I", "Z")
-function drawTetromino(tetromino) {
+function drawTetromino(tetromino, x, y) {
+    tetromino = getTetrominoByName(tetromino);
     ctx_playfield.fillStyle = tetromino.color;
     for (let row = 0; row < tetromino.matrix.length; row++) {
         for (let col = 0; col < tetromino.matrix[row].length; col++) {
             if (tetromino.matrix[row][col]) {
-                ctx_playfield.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
+                ctx_playfield.fillRect((x + col) * gridSize, (y + row) * gridSize, gridSize, gridSize);
             }
         }
     }
 }
 
+// requestAnimationFrame for game loop
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+
+// why requestAnimationFrame over conventional "while" game loop
+// http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
+
+let animation; // holds request id
+let previousTimeStamp; // to compare with timeStamp
+let y = 0; // position of falling tetromino
+
+function fall(timeStamp) {
+    if (previousTimeStamp == undefined) { // first time calling
+        previousTimeStamp = timeStamp;
+    }
+    const elapsed = timeStamp - previousTimeStamp;
+
+    if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
+        console.log(timeStamp); // debug log
+        ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+        drawTetromino("Z", 1, y++); // draw new frame
+
+        if (y == 19) { // position check
+            cancelAnimationFrame(animation); // stop animation
+            return; // end recursion
+        }
+
+        previousTimeStamp = timeStamp; // point reset
+    }
+
+    animation = requestAnimationFrame(fall);
+}
+
 drawGrid();
-drawTetromino(getTetrominoByName("L"));
+animation = requestAnimationFrame(fall);
+// wip
 
 })
