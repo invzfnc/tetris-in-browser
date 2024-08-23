@@ -1,17 +1,26 @@
-.grid {
-    width: 200px;
-    height: 400px;
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: black;
+    align-items: center;
+    justify-content: center;
     display: flex;
-    flex-wrap: wrap;
-    background-color: yellow;
 }
 
-.grid div {
-    height: 20px;
-    width: 20px;
-
+div.canvas {
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.tetromino {
-    background-color: blue;
+#playfield {
+    border: 1px solid grey;
+    z-index: 1;
+}
+
+#grids {
+    position: absolute;
+    z-index: 0;
 }

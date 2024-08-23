@@ -1,156 +1,155 @@
-document.addEventListener('DOMContentLoaded', () => {
+// implementation mainly follows this guideline
+// https://tetris.fandom.com/wiki/Tetris_Guideline
 
-const grid = document.querySelector('.grid');
-let squares = Array.from(document.querySelectorAll('.grid div'));
-const ScoreDisplay = document.querySelector('#score');
-const StartBtn = document.querySelector('#start-button');
-const width = 10;
+// gives a very good idea on how to make the game work on a basic level
+// https://gist.github.com/straker/3c98304f8a6a9174efd8292800891ea1
 
-// Tetrominoes (0,1,2,3 = rotation position)
-const lTetromino = [
-    [1, width+1, width*2+1, 2], // 0
-    [width, width+1, width+2, width*2+2], // 1
-    [1, width+1, width*2+1, width*2], // 2
-    [width, width*2, width*2+1, width*2+2] // 3
-];
+document.addEventListener("DOMContentLoaded", () => {
 
-const sTetromino = [
-    [width*2,width*2+1,width+1,width+2], // 0
-    [0,width,width+1,width*2+1], // 1
-    [width*2,width*2+1,width+1,width+2], // 2
-    [0,width,width+1,width*2+1] // 3
-];
+let playfield = document.getElementById("playfield");
+let ctx_playfield = playfield.getContext("2d");
 
-const zTetrimino = [
-    [width,width+1,width*2+1,width*2+2], // 0
-    [width*2,width,width+1,1], // 1
-    [width,width+1,width*2+1,width*2+2], // 2
-    [width*2,width,width+1,1] // 3
-]
+let grids = document.getElementById("grids");
+let ctx_grids = grids.getContext("2d");
 
-const tTetromino = [
-    [width,1,width+1,width+2], // 0
-    [1,width+1,width+2,width*2+1], // 1
-    [width,width+1,width*2+1,width+2], // 2
-    [1,width+1,width,width*2+1] // 3
-];
+// 10*20 grids with each of them sized 35
+const gridSize = 35;
+const gridRows = 20;
+const gridColumns = 10;
 
-const oTetromino = [
-    [0,1,width,width+1], // 0
-    [0,1,width,width+1], // 1
-    [0,1,width,width+1], // 2
-    [0,1,width,width+1], // 3
-];
+// sets width and height of both canvas
+grids.width = gridColumns * gridSize;
+grids.height = gridRows * gridSize;
 
-const iTetromino = [
-    [1,width+1,width*2+1,width*3+1], // 0
-    [width, width+1,width+2,width+3], // 1
-    [1,width+1,width*2+1,width*3+1], // 2
-    [width, width+1,width+2,width+3], // 3
-];
+playfield.width = gridColumns * gridSize;
+playfield.height = gridRows * gridSize;
 
-const theTetrominoes = [lTetromino, sTetromino, tTetromino, oTetromino, iTetromino, zTetrimino];
+// https://tetris.fandom.com/wiki/SRS
+// tetrominos shape matrix
+const tetrominos = {
+    "I": [
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ],
 
-let currentPosition = 4;
-let currentRotation = 0;
+    "J": [
+        [1, 0, 0],
+        [1, 1, 1],
+        [0, 0, 0]
+    ],
 
-// randomly select a Tetrimino and its first rotation
-let randomTetrimino = Math.floor(Math.random()*theTetrominoes.length);
-let randomRotation = Math.floor(Math.random()*4);
+    "L": [
+        [0, 0, 1],
+        [1, 1, 1],
+        [0, 0, 0]
+    ],
 
-let current = theTetrominoes[randomTetrimino][randomRotation]; // first parameter = tetrimino, second parameter = rotation
+    "O": [
+        [1, 1],
+        [1, 1]
+    ],
 
+    "S": [
+        [0, 1, 1],
+        [1, 1, 0],
+        [0, 0, 0]
+    ],
 
-// draw the tetromino
-function draw() {
-    current.forEach(index => { // applies logic to each item in the array
-        squares[currentPosition + index].classList.add('tetromino') // sets the current position, adds tetrimino and colour from .css]
-    })
+    "T": [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0]
+    ],
+
+    "Z": [
+        [1, 1, 0],
+        [0, 1, 1],
+        [0, 0, 0]
+    ]
 }
 
-// undraw the Tetromino
-function undraw() {
-    current.forEach(index => {
-        squares[currentPosition + index].classList.remove('tetromino') 
-    })
+// tetrominos colors
+const colors = {
+    "I": "cyan",
+    "J": "blue",
+    "L": "orange",
+    "O": "yellow",
+    "S": "green",
+    "T": "purple",
+    "Z": "red"
 }
 
+// how to draw grids on canva: https://stackoverflow.com/a/64802566
+// how the playfield should be: https://tetris.fandom.com/wiki/Playfield
+function drawGrid() {
+    ctx_grids.strokeStyle = "grey";
 
-draw();
-
-let currentGridPosX = currentPosition;
-let currentGridPosY = 0;
-
-// Tetromino movement
-console.log(currentPosition);
-
-function control(input){
-    if (input.keyCode == 40){
-        moveDown();
+    for (let x = 0; x <= grids.width; x += gridSize) {
+        for (let y = 0; y <= grids.height; y += gridSize)
+            ctx_grids.strokeRect(x, y, gridSize, gridSize);
     }
-    if (input.keyCode == 37){
-        moveLeft();
-    }
-    if (input.keyCode == 39){
-        moveRight();
-    }
-    console.log(currentPosition);
-    console.log("Current gridX: " + currentGridPosX);
-    console.log("Current gridY: " + currentGridPosY);
 }
 
-document.addEventListener('keydown', control);
+// returns a tetromino along with its properties
+function getTetrominoByName(name) {
+    const tetromino = {
+        name: name,
+        matrix: tetrominos[name],
+        color: colors[name]
+    };
+    return tetromino;
+}
 
-//Temporary solution to move blocks, prob need to somehow reduce amount of draw functions.
-
-
-function moveDown(){
-    undraw();
-    if (currentGridPosY < 18){
-        currentPosition += 10;
-        currentGridPosY++;
+// draws specific tetromino on screen (given input like "I", "Z")
+function drawTetromino(tetromino, x, y) {
+    tetromino = getTetrominoByName(tetromino);
+    ctx_playfield.fillStyle = tetromino.color;
+    for (let row = 0; row < tetromino.matrix.length; row++) {
+        for (let col = 0; col < tetromino.matrix[row].length; col++) {
+            if (tetromino.matrix[row][col]) {
+                ctx_playfield.fillRect((x + col) * gridSize, (y + row) * gridSize, gridSize, gridSize);
+            }
+        }
     }
-    
-    draw(); 
 }
 
-function moveLeft(){
-    undraw();
-    if (currentGridPosX > 0){
-        currentPosition -= 1;
-        currentGridPosX--;
+// requestAnimationFrame for game loop
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+
+// why requestAnimationFrame over conventional "while" game loop
+// http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
+
+let animation; // holds request id
+let previousTimeStamp; // to compare with timeStamp
+let y = 0; // position of falling tetromino
+
+function fall(timeStamp) {
+    if (previousTimeStamp == undefined) { // first time calling
+        previousTimeStamp = timeStamp;
     }
-    draw();
-}
+    const elapsed = timeStamp - previousTimeStamp;
 
-function moveRight(){
-    undraw();
-    if (currentGridPosX < 7){
-        currentPosition += 1;
-        currentGridPosX++;
+    if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
+        console.log(timeStamp); // debug log
+        ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+        drawTetromino("Z", 1, y++); // draw new frame
+
+        if (y == 19) { // position check
+            cancelAnimationFrame(animation); // stop animation
+            return; // end recursion
+        }
+
+        previousTimeStamp = timeStamp; // point reset
     }
-    draw();
+
+    animation = requestAnimationFrame(fall);
 }
 
-
-function getCurrentLevel(){
-    let currentLevel = 0;
-    if (currentPosition < 10)
-        currentLevel = currentPosition;
-    else if (currentPosition >= 10)
-        currentLevel = currentPosition - 10;
-
-    return currentLevel;
-}
-
+drawGrid();
+animation = requestAnimationFrame(fall);
+// wip
 
 })
-
-// 18/8/24
-// Fixed Ztetrimino not aligned within grid
-// Added down, left and right movement
-// Added temp solution to contain tetriminos in the game area (read note)
-
-// Note: Every block has their own unique grid limit,
-// in order to contain the blocks within the game area,
-// you need to get obtain each block's X and Y grid limits (limit to which they can move to the edge of the game area)
