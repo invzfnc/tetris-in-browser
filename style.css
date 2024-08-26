@@ -4,7 +4,7 @@ html, body {
 }
 
 body {
-    background-color: rgb(17, 17, 17);
+    background-color: rgb(10, 10, 10);
     align-items: center;
     justify-content: center;
     display: flex;
@@ -16,7 +16,7 @@ div.canvas {
 }
 
 #playfield {
-    border: 1px solid rgb(38, 38, 38);
+    border: 1px solid rgb(15, 15, 15);
     z-index: 1;
 }
 
