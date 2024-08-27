@@ -81,6 +81,11 @@ const colors = {
     "Z": "red"
 }
 
+//Get Random tetromino
+let tArray = ["I","J","L","O","S","T","Z"];
+let random = Math.floor(Math.random()*tArray.length);
+let randtetromino = getTetrominoByName(tArray[random]);
+
 // how to draw grids on canva: https://stackoverflow.com/a/64802566
 // how the playfield should be: https://tetris.fandom.com/wiki/Playfield
 function drawGrid() {
@@ -104,7 +109,6 @@ function getTetrominoByName(name) {
 
 // draws specific tetromino on screen (given input like "I", "Z")
 function drawTetromino(tetromino, x, y) {
-    tetromino = getTetrominoByName(tetromino);
     ctx_playfield.fillStyle = tetromino.color;
     for (let row = 0; row < tetromino.matrix.length; row++) {
         for (let col = 0; col < tetromino.matrix[row].length; col++) {
@@ -125,19 +129,67 @@ function drawTetromino(tetromino, x, y) {
 let animation; // holds request id
 let previousTimeStamp; // to compare with timeStamp
 let y = 0; // position of falling tetromino
+let x = 0;
+let playfieldArray = Array.from({ length: gridRows }, () => Array(gridColumns).fill(0)); // converts playfield into 2D array
 
-function fall(timeStamp) {
-    if (previousTimeStamp == undefined) { // first time calling
+
+// Keyboard movement
+document.addEventListener('keydown', control);
+
+function control(e){
+    if (e.keyCode == 40){
+        if (isMoveValid(randtetromino, x, y) && y < 18) // <- some reason the tetromino overshoots, had to put another temp limiter here 
+            y++;
+    }
+    if (e.keyCode == 37){
+        if (isMoveValid(randtetromino, x - 1, y))
+            x--;
+    }
+    if (e.keyCode == 39){
+        if (isMoveValid(randtetromino, x + 1, y))
+            x++;
+    }
+}
+
+
+// checks if current tetromino x and y is valid
+// from https://gist.github.com/straker/3c98304f8a6a9174efd8292800891ea1
+// had to use abit of chatgpt to get an understanding
+function isMoveValid(tetromino, x, y) {
+    for (let row = 0; row < tetromino.matrix.length; row++) {
+        for (let col = 0; col < tetromino.matrix[row].length; col++) {
+            if (tetromino.matrix[row][col] &&
+                (x + col < 0 || 
+                 x + col >= gridColumns || 
+                 y + row >= gridRows || 
+                 playfieldArray[y + row][x + col])
+            ) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+
+//Main gameloop
+function gameloop(timeStamp) {
+    if (!previousTimeStamp) { // first time calling
         previousTimeStamp = timeStamp;
     }
     const elapsed = timeStamp - previousTimeStamp;
 
-    if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
-        console.log(timeStamp); // debug log
-        ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
-        drawTetromino("Z", 1, y++); // draw new frame
+    ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear prev frame
+    drawTetromino(randtetromino, x, y) // draw new frame
+    console.log(y);
 
-        if (y == 19) { // position check
+    if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
+        //console.log(timeStamp); // debug log
+        ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+        drawTetromino(randtetromino, x, y++); // draw new frame
+
+        if (y > 18 || !isMoveValid(randtetromino, x, y)) { // position check
             cancelAnimationFrame(animation); // stop animation
             return; // end recursion
         }
@@ -145,11 +197,12 @@ function fall(timeStamp) {
         previousTimeStamp = timeStamp; // point reset
     }
 
-    animation = requestAnimationFrame(fall);
+    animation = requestAnimationFrame(gameloop);
 }
 
+
 drawGrid();
-animation = requestAnimationFrame(fall);
+animation = requestAnimationFrame(gameloop);
 // wip
 
 })
