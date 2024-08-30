@@ -189,6 +189,30 @@ function getNextTetromino() {
     return tetrominoSequence.pop();
 }
 
+// collision and boundary check
+function isValidMove() {
+    const x = active_tetromino.x;
+    const y = active_tetromino.y;
+
+    for (let row = 0; row < active_tetromino.matrix.length; row++) {
+        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+            // if piece is empty
+            if (!active_tetromino.matrix[row][col])
+                continue;
+
+            // out of bound (horizontally)
+            if (x + col < 0 || x + col >= gridColumns) return false;
+
+            // out of bound (bottom)
+            if (y + row >= gridRows) return false;
+
+            // collision with other tetrominos
+            if (playfieldMatrix[row][col]) return false;
+        }
+    }
+    return true;
+}
+
 initializeTetromino(getNextTetromino());
 
 function gameloop(timeStamp) {
@@ -200,10 +224,14 @@ function gameloop(timeStamp) {
     if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
         ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
         drawPlayfield(); // draw playfield matrix
-        drawTetromino(); // draw active tetromino
-        active_tetromino.y++; // fall
 
-        if (active_tetromino.y == 19) { // position check
+        if (isValidMove()) {
+            drawTetromino(); // draw active tetromino
+            active_tetromino.y++; // fall
+            console.log(active_tetromino);
+        }
+        else {
+            // initializeTetromino(getNextTetromino());
             cancelAnimationFrame(animation); // stop animation
             return; // end recursion
         }
