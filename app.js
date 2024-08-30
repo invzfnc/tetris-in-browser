@@ -96,7 +96,7 @@ const tetromino_colors = {
 // how to draw grids on canva: https://stackoverflow.com/a/64802566
 // how the playfield should be: https://tetris.fandom.com/wiki/Playfield
 function drawGrid() {
-    ctx_grids.strokeStyle = "grey";
+    ctx_grids.strokeStyle = "rgb(100, 100, 100)";
 
     for (let x = 0; x <= grids.width; x += gridSize) {
         for (let y = 0; y <= grids.height; y += gridSize)
