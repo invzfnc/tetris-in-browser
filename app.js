@@ -149,6 +149,7 @@ function initializeTetromino(name) {
 let animation; // holds request id
 let previousTimeStamp; // to compare with timeStamp
 
+let tetrominoSequence = []; // 7-bag randomizer
 // stores properties of current tetromino
 let active_tetromino = {
     "name": null,
@@ -158,7 +159,37 @@ let active_tetromino = {
     "y": null,
 }
 
-initializeTetromino("I");
+// random number generator
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+// The maximum is exclusive and the minimum is inclusive
+function randint(min, max) {
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); 
+}
+
+// guideline on generating "random" tetrominos
+// https://tetris.wiki/Random_Generator
+function generateSequence() {
+    const tetrominos = Object.keys(tetromino_matrix);
+
+    while (tetrominos.length) {
+        let index = randint(0, tetrominos.length);
+        tetrominoSequence.push(tetrominos[index]);
+        tetrominos.splice(index, 1);
+    }
+}
+
+// pop and return name of next tetromino in sequence
+function getNextTetromino() {
+    if (tetrominoSequence.length == 0) {
+        generateSequence();
+    }
+    console.log(tetrominoSequence);
+    return tetrominoSequence.pop();
+}
+
+initializeTetromino(getNextTetromino());
 
 function gameloop(timeStamp) {
     if (previousTimeStamp == undefined) { // first frame
