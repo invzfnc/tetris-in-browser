@@ -24,9 +24,21 @@ grids.height = gridRows * gridSize;
 playfield.width = gridColumns * gridSize;
 playfield.height = gridRows * gridSize;
 
+// 2D array/matrix to store playfield state
+let playfieldMatrix = [];
+
+// populate the empty state
+for (let row = 0; row < gridRows; row++) {
+    playfieldMatrix[row] = [];
+    
+    for (let col = 0; col < gridColumns ; col++) {
+        playfieldMatrix[row][col] = 0;
+    }
+}
+
 // https://tetris.fandom.com/wiki/SRS
-// tetrominos shape matrix
-const tetrominos = {
+// tetromino shape matrix
+const tetromino_matrix = {
     "I": [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
@@ -70,8 +82,8 @@ const tetrominos = {
     ]
 }
 
-// tetrominos colors
-const colors = {
+// tetromino colors
+const tetromino_colors = {
     "I": "cyan",
     "J": "blue",
     "L": "orange",
@@ -92,27 +104,39 @@ function drawGrid() {
     }
 }
 
-// returns a tetromino along with its properties
-function getTetrominoByName(name) {
-    const tetromino = {
-        name: name,
-        matrix: tetrominos[name],
-        color: colors[name]
-    };
-    return tetromino;
-}
-
-// draws specific tetromino on screen (given input like "I", "Z")
-function drawTetromino(tetromino, x, y) {
-    tetromino = getTetrominoByName(tetromino);
-    ctx_playfield.fillStyle = tetromino.color;
-    for (let row = 0; row < tetromino.matrix.length; row++) {
-        for (let col = 0; col < tetromino.matrix[row].length; col++) {
-            if (tetromino.matrix[row][col]) {
-                ctx_playfield.fillRect((x + col) * gridSize, (y + row) * gridSize, gridSize, gridSize);
+// draws playfieldMatrix on screen (wip)
+function drawPlayfield() {
+    for (let row = 0; row < gridRows; row++) {
+        for (let col = 0; col < gridColumns; col++) {
+            if (playfieldMatrix[row][col]) {
+                console.log("has value");
             }
         }
     }
+}
+
+// draws active_tetromino on screen
+function drawTetromino() {
+    ctx_playfield.fillStyle = active_tetromino.color;
+    for (let row = 0; row < active_tetromino.matrix.length; row++) {
+        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+            if (active_tetromino.matrix[row][col]) {
+                ctx_playfield.fillRect((active_tetromino.x + col) * gridSize, 
+                (active_tetromino.y + row) * gridSize, gridSize, gridSize);
+            }
+        }
+    }
+}
+
+// initialize values of active_tetromino
+function initializeTetromino(name) {
+    active_tetromino.name = name;
+    active_tetromino.color = tetromino_colors[name];
+    active_tetromino.matrix = tetromino_matrix[name];
+    // tetromino spawn position
+    // https://harddrop.com/wiki/Spawn_Location
+    active_tetromino.x = name== "O" ? 4 : 3;
+    active_tetromino.y = 0;
 }
 
 // requestAnimationFrame for game loop
@@ -124,20 +148,31 @@ function drawTetromino(tetromino, x, y) {
 
 let animation; // holds request id
 let previousTimeStamp; // to compare with timeStamp
-let y = 0; // position of falling tetromino
 
-function fall(timeStamp) {
-    if (previousTimeStamp == undefined) { // first time calling
+// stores properties of current tetromino
+let active_tetromino = {
+    "name": null,
+    "matrix": null,
+    "color": null,
+    "x": null,
+    "y": null,
+}
+
+initializeTetromino("I");
+
+function gameloop(timeStamp) {
+    if (previousTimeStamp == undefined) { // first frame
         previousTimeStamp = timeStamp;
     }
     const elapsed = timeStamp - previousTimeStamp;
 
     if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
-        console.log(timeStamp); // debug log
         ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
-        drawTetromino("Z", 1, y++); // draw new frame
+        drawPlayfield(); // draw playfield matrix
+        drawTetromino(); // draw active tetromino
+        active_tetromino.y++; // fall
 
-        if (y == 19) { // position check
+        if (active_tetromino.y == 19) { // position check
             cancelAnimationFrame(animation); // stop animation
             return; // end recursion
         }
@@ -145,11 +180,10 @@ function fall(timeStamp) {
         previousTimeStamp = timeStamp; // point reset
     }
 
-    animation = requestAnimationFrame(fall);
+    animation = requestAnimationFrame(gameloop);
 }
 
 drawGrid();
-animation = requestAnimationFrame(fall);
-// wip
+animation = requestAnimationFrame(gameloop);
 
 })
