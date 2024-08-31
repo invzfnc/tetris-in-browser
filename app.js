@@ -192,9 +192,8 @@ function getNextTetromino() {
 }
 
 // collision and boundary check
-function isValidMove() {
+function isValidMove(y) {
     const x = active_tetromino.x;
-    const y = active_tetromino.y;
 
     for (let row = 0; row < active_tetromino.matrix.length; row++) {
         for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
@@ -231,7 +230,6 @@ function placeTetromino() {
     }
 }
 
-
 function gameloop(timeStamp) {
     if (previousTimeStamp == undefined) { // first frame
         previousTimeStamp = timeStamp;
@@ -243,13 +241,12 @@ function gameloop(timeStamp) {
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
 
-    if (elapsed > 450) { // execute once every x milliseconds (alter falling speed here)
-        if (isValidMove()) {
+    if (elapsed > 400) { // execute once every x milliseconds (alter falling speed here)
+        if (isValidMove(active_tetromino.y + 1)) {
             active_tetromino.y++; // fall
             console.log(active_tetromino);
         }
         else {
-            active_tetromino.y-- // avoid overshooting
             placeTetromino();
             initializeTetromino(getNextTetromino());
             // cancelAnimationFrame(animation); // stop animation
