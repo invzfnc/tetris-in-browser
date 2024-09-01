@@ -12,6 +12,7 @@ let ctx_playfield = playfield.getContext("2d");
 let grids = document.getElementById("grids");
 let ctx_grids = grids.getContext("2d");
 
+// displayed/drawn grids
 // 10*20 grids with each of them sized 35
 const gridSize = 35;
 const gridRows = 20;
@@ -29,6 +30,7 @@ let playfieldMatrix = [];
 
 // populate the empty state
 // extra row for vanish space
+// playfield guidelines: https://tetris.fandom.com/wiki/Playfield
 for (let row = 0; row < gridRows + 1; row++) {
     playfieldMatrix[row] = [];
     
@@ -94,43 +96,17 @@ const tetromino_colors = {
     "Z": "red"
 }
 
-// how to draw grids on canva: https://stackoverflow.com/a/64802566
-// how the playfield should be: https://tetris.fandom.com/wiki/Playfield
-function drawGrid() {
-    ctx_grids.strokeStyle = "rgb(100, 100, 100)";
-
-    for (let x = 0; x <= grids.width; x += gridSize) {
-        for (let y = 0; y <= grids.height; y += gridSize)
-            ctx_grids.strokeRect(x, y, gridSize, gridSize);
-    }
+// stores properties of current tetromino
+let active_tetromino = {
+    "name": null,
+    "matrix": null,
+    "color": null,
+    "x": null,
+    "y": null,
 }
 
-// draws playfieldMatrix on screen
-function drawPlayfield() {
-    for (let row = 1; row < playfieldMatrix.length; row++) {
-        for (let col = 0; col < playfieldMatrix[0].length; col++) {
-            let grid = playfieldMatrix[row][col];
-            if (grid) {
-                ctx_playfield.fillStyle = tetromino_colors[grid];
-                ctx_playfield.fillRect(col * gridSize, (row - 1) * gridSize,
-                                       gridSize, gridSize)
-            }
-        }
-    }
-}
-
-// draws active_tetromino on screen
-function drawTetromino() {
-    ctx_playfield.fillStyle = active_tetromino.color;
-    for (let row = 0; row < active_tetromino.matrix.length; row++) {
-        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
-            if (active_tetromino.matrix[row][col]) {
-                ctx_playfield.fillRect((active_tetromino.x + col) * gridSize, 
-                (active_tetromino.y + row - 1) * gridSize, gridSize, gridSize);
-            }
-        }
-    }
-}
+// 7-bag randomizer
+let tetrominoSequence = [];
 
 // initialize values of active_tetromino
 function initializeTetromino(name) {
@@ -141,27 +117,6 @@ function initializeTetromino(name) {
     // https://harddrop.com/wiki/Spawn_Location
     active_tetromino.x = name== "O" ? 4 : 3;
     active_tetromino.y = 0;
-}
-
-// requestAnimationFrame for game loop
-// https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
-// https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
-
-// why requestAnimationFrame over conventional "while" game loop
-// http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
-
-let animation; // holds request id
-let previousTimeStamp; // to compare with timeStamp
-let gameOver = false; // if game ends
-
-let tetrominoSequence = []; // 7-bag randomizer
-// stores properties of current tetromino
-let active_tetromino = {
-    "name": null,
-    "matrix": null,
-    "color": null,
-    "x": null,
-    "y": null,
 }
 
 // random number generator
@@ -235,6 +190,54 @@ function placeTetromino() {
     }
 }
 
+// how to draw grids on canva: https://stackoverflow.com/a/64802566
+function drawGrid() {
+    ctx_grids.strokeStyle = "rgb(100, 100, 100)";
+
+    for (let x = 0; x <= grids.width; x += gridSize) {
+        for (let y = 0; y <= grids.height; y += gridSize)
+            ctx_grids.strokeRect(x, y, gridSize, gridSize);
+    }
+}
+
+// draws playfieldMatrix on screen
+function drawPlayfield() {
+    for (let row = 1; row < playfieldMatrix.length; row++) {
+        for (let col = 0; col < playfieldMatrix[0].length; col++) {
+            let grid = playfieldMatrix[row][col];
+            if (grid) {
+                ctx_playfield.fillStyle = tetromino_colors[grid];
+                ctx_playfield.fillRect(col * gridSize, (row - 1) * gridSize,
+                                       gridSize, gridSize)
+            }
+        }
+    }
+}
+
+// draws active_tetromino on screen
+function drawTetromino() {
+    ctx_playfield.fillStyle = active_tetromino.color;
+    for (let row = 0; row < active_tetromino.matrix.length; row++) {
+        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+            if (active_tetromino.matrix[row][col]) {
+                ctx_playfield.fillRect((active_tetromino.x + col) * gridSize, 
+                (active_tetromino.y + row - 1) * gridSize, gridSize, gridSize);
+            }
+        }
+    }
+}
+
+// requestAnimationFrame for game loop
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
+
+// why requestAnimationFrame over conventional "while" game loop
+// http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
+
+let animation; // holds request id
+let previousTimeStamp; // to compare with timeStamp
+let gameOver = false; // if game ends
+
 function gameloop(timeStamp) {
     if (gameOver) {
         alert("Game over!");
@@ -255,7 +258,6 @@ function gameloop(timeStamp) {
     if (elapsed > 300) { // execute once every x milliseconds (alter falling speed here)
         if (isValidMove(active_tetromino.y + 1)) {
             active_tetromino.y++; // fall
-            console.log(active_tetromino);
         }
         else {
             placeTetromino();
