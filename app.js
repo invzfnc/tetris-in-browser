@@ -28,7 +28,8 @@ playfield.height = gridRows * gridSize;
 let playfieldMatrix = [];
 
 // populate the empty state
-for (let row = 0; row < gridRows; row++) {
+// extra row for vanish space
+for (let row = 0; row < gridRows + 1; row++) {
     playfieldMatrix[row] = [];
     
     for (let col = 0; col < gridColumns ; col++) {
@@ -104,14 +105,14 @@ function drawGrid() {
     }
 }
 
-// draws playfieldMatrix on screen (wip)
+// draws playfieldMatrix on screen
 function drawPlayfield() {
-    for (let row = 0; row < gridRows; row++) {
-        for (let col = 0; col < gridColumns; col++) {
+    for (let row = 1; row < playfieldMatrix.length; row++) {
+        for (let col = 0; col < playfieldMatrix[0].length; col++) {
             let grid = playfieldMatrix[row][col];
             if (grid) {
                 ctx_playfield.fillStyle = tetromino_colors[grid];
-                ctx_playfield.fillRect(col * gridSize, row * gridSize,
+                ctx_playfield.fillRect(col * gridSize, (row - 1) * gridSize,
                                        gridSize, gridSize)
             }
         }
@@ -125,7 +126,7 @@ function drawTetromino() {
         for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
             if (active_tetromino.matrix[row][col]) {
                 ctx_playfield.fillRect((active_tetromino.x + col) * gridSize, 
-                (active_tetromino.y + row) * gridSize, gridSize, gridSize);
+                (active_tetromino.y + row - 1) * gridSize, gridSize, gridSize);
             }
         }
     }
@@ -206,7 +207,7 @@ function isValidMove(y) {
             if (x + col < 0 || x + col >= gridColumns) return false;
 
             // out of bound (bottom)
-            if (y + row >= gridRows) return false;
+            if (y + row >= playfieldMatrix.length) return false;
 
             // collision with other tetrominos
             if (playfieldMatrix[y + row][x + col]) return false;
@@ -227,7 +228,7 @@ function placeTetromino() {
                 continue;
 
             // check if placement has any part offscreen
-            if (y + row <= 0) gameOver = true;
+            if (y + row <= 1) gameOver = true;
 
             playfieldMatrix[y + row][x + col] = active_tetromino.name;
         }
