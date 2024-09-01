@@ -108,8 +108,11 @@ function drawGrid() {
 function drawPlayfield() {
     for (let row = 0; row < gridRows; row++) {
         for (let col = 0; col < gridColumns; col++) {
-            if (playfieldMatrix[row][col]) {
-                console.log("has value");
+            let grid = playfieldMatrix[row][col];
+            if (grid) {
+                ctx_playfield.fillStyle = tetromino_colors[grid];
+                ctx_playfield.fillRect(col * gridSize, row * gridSize,
+                                       gridSize, gridSize)
             }
         }
     }
@@ -148,6 +151,7 @@ function initializeTetromino(name) {
 
 let animation; // holds request id
 let previousTimeStamp; // to compare with timeStamp
+let gameOver = false; // if game ends
 
 let tetrominoSequence = []; // 7-bag randomizer
 // stores properties of current tetromino
@@ -185,14 +189,12 @@ function getNextTetromino() {
     if (tetrominoSequence.length == 0) {
         generateSequence();
     }
-    console.log(tetrominoSequence);
     return tetrominoSequence.pop();
 }
 
 // collision and boundary check
-function isValidMove() {
+function isValidMove(y) {
     const x = active_tetromino.x;
-    const y = active_tetromino.y;
 
     for (let row = 0; row < active_tetromino.matrix.length; row++) {
         for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
@@ -207,33 +209,56 @@ function isValidMove() {
             if (y + row >= gridRows) return false;
 
             // collision with other tetrominos
-            if (playfieldMatrix[row][col]) return false;
+            if (playfieldMatrix[y + row][x + col]) return false;
         }
     }
     return true;
 }
 
-initializeTetromino(getNextTetromino());
+// put/store active tetromino matrix into playfield matrix
+function placeTetromino() {
+    const x = active_tetromino.x;
+    const y = active_tetromino.y;
+
+    for (let row = 0; row < active_tetromino.matrix.length; row++) {
+        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+            // if piece is empty
+            if (!active_tetromino.matrix[row][col])
+                continue;
+
+            // check if placement has any part offscreen
+            if (y + row <= 0) gameOver = true;
+
+            playfieldMatrix[y + row][x + col] = active_tetromino.name;
+        }
+    }
+}
 
 function gameloop(timeStamp) {
+    if (gameOver) {
+        alert("Game over!");
+        cancelAnimationFrame(animation); // stop animation
+        return; // end recursion
+    }
+
     if (previousTimeStamp == undefined) { // first frame
         previousTimeStamp = timeStamp;
+        initializeTetromino(getNextTetromino());
+        drawTetromino(); // draw active tetromino
     }
     const elapsed = timeStamp - previousTimeStamp;
+    ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+    drawPlayfield(); // draw playfield matrix
+    drawTetromino(); // draw active tetromino
 
-    if (elapsed > 500) { // execute once every x milliseconds (alter falling speed here)
-        ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
-        drawPlayfield(); // draw playfield matrix
-
-        if (isValidMove()) {
-            drawTetromino(); // draw active tetromino
+    if (elapsed > 300) { // execute once every x milliseconds (alter falling speed here)
+        if (isValidMove(active_tetromino.y + 1)) {
             active_tetromino.y++; // fall
             console.log(active_tetromino);
         }
         else {
-            // initializeTetromino(getNextTetromino());
-            cancelAnimationFrame(animation); // stop animation
-            return; // end recursion
+            placeTetromino();
+            initializeTetromino(getNextTetromino());
         }
 
         previousTimeStamp = timeStamp; // point reset
