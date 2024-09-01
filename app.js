@@ -149,9 +149,9 @@ function getNextTetromino() {
 }
 
 // collision and boundary check
-function isValidMove(y) {
-    const x = active_tetromino.x;
-
+function isValidMove(y = active_tetromino.y, 
+                     x = active_tetromino.x, 
+                     matrix = active_tetromino.matrix) {
     for (let row = 0; row < active_tetromino.matrix.length; row++) {
         for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
             // if piece is empty
@@ -269,6 +269,45 @@ function gameloop(timeStamp) {
 
     animation = requestAnimationFrame(gameloop);
 }
+
+// https://stackoverflow.com/a/43418287
+// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+window.addEventListener("keydown",
+    (event) => {
+        if (gameOver) return;
+
+        // do nothing if the event was already processed
+        if (event.defaultPrevented) return;
+
+        switch (event.key) {
+            // drop
+            case "ArrowDown":
+                if (isValidMove(active_tetromino.y + 1)) {
+                    active_tetromino.y++;
+                }
+                break;
+            // move left
+            case "ArrowLeft":
+                if (isValidMove(active_tetromino.y, active_tetromino.x - 1)) {
+                    active_tetromino.x--;
+                }
+                break;
+            // move right
+            case "ArrowRight":
+                if (isValidMove(active_tetromino.y, active_tetromino.x + 1)) {
+                    active_tetromino.x++;
+                }
+                break;
+            // hard drop
+            case " ":
+                while (isValidMove(active_tetromino.y + 1)) {
+                    active_tetromino.y++;
+                }
+                break;
+        }
+
+    }
+)
 
 drawGrid();
 animation = requestAnimationFrame(gameloop);
