@@ -151,6 +151,7 @@ function initializeTetromino(name) {
 
 let animation; // holds request id
 let previousTimeStamp; // to compare with timeStamp
+let gameOver = false; // if game ends
 
 let tetrominoSequence = []; // 7-bag randomizer
 // stores properties of current tetromino
@@ -225,12 +226,21 @@ function placeTetromino() {
             if (!active_tetromino.matrix[row][col])
                 continue;
 
+            // check if placement has any part offscreen
+            if (y + row <= 0) gameOver = true;
+
             playfieldMatrix[y + row][x + col] = active_tetromino.name;
         }
     }
 }
 
 function gameloop(timeStamp) {
+    if (gameOver) {
+        alert("Game over!");
+        cancelAnimationFrame(animation); // stop animation
+        return; // end recursion
+    }
+
     if (previousTimeStamp == undefined) { // first frame
         previousTimeStamp = timeStamp;
         initializeTetromino(getNextTetromino());
@@ -241,7 +251,7 @@ function gameloop(timeStamp) {
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
 
-    if (elapsed > 400) { // execute once every x milliseconds (alter falling speed here)
+    if (elapsed > 300) { // execute once every x milliseconds (alter falling speed here)
         if (isValidMove(active_tetromino.y + 1)) {
             active_tetromino.y++; // fall
             console.log(active_tetromino);
@@ -249,8 +259,6 @@ function gameloop(timeStamp) {
         else {
             placeTetromino();
             initializeTetromino(getNextTetromino());
-            // cancelAnimationFrame(animation); // stop animation
-            // return; // end recursion
         }
 
         previousTimeStamp = timeStamp; // point reset
