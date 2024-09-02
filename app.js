@@ -103,6 +103,7 @@ let active_tetromino = {
     "color": null,
     "x": null,
     "y": null,
+    "lock": false
 }
 
 // 7-bag randomizer
@@ -117,6 +118,7 @@ function initializeTetromino(name) {
     // https://harddrop.com/wiki/Spawn_Location
     active_tetromino.x = name== "O" ? 4 : 3;
     active_tetromino.y = 0;
+    active_tetromino.lock = false;
 }
 
 // random number generator
@@ -188,6 +190,9 @@ function placeTetromino() {
             playfieldMatrix[y + row][x + col] = active_tetromino.name;
         }
     }
+    
+    // lock tetromino after placement
+    active_tetromino.lock = true;
 }
 
 // how to draw grids on canva: https://stackoverflow.com/a/64802566
@@ -279,6 +284,9 @@ window.addEventListener("keydown",
         // do nothing if the event was already processed
         if (event.defaultPrevented) return;
 
+        // do nothing if tetromino is already in "locked" state
+        if (active_tetromino.lock) return;
+
         switch (event.key) {
             // drop
             case "ArrowDown":
@@ -303,6 +311,7 @@ window.addEventListener("keydown",
                 while (isValidMove(active_tetromino.y + 1)) {
                     active_tetromino.y++;
                 }
+                active_tetromino.lock = true;
                 break;
         }
 
