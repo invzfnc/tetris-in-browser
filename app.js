@@ -115,7 +115,7 @@ function initializeTetromino(name) {
     active_tetromino.matrix = tetromino_matrix[name];
     // tetromino spawn position
     // https://harddrop.com/wiki/Spawn_Location
-    active_tetromino.x = name== "O" ? 4 : 3;
+    active_tetromino.x = name == "O" ? 4 : 3;
     active_tetromino.y = 0;
 }
 
@@ -186,6 +186,19 @@ function placeTetromino() {
             if (y + row <= 1) gameOver = true;
 
             playfieldMatrix[y + row][x + col] = active_tetromino.name;
+        }
+    }
+
+    checkLineClears();
+}
+
+// check for line clears and clears the row
+// https://stackoverflow.com/a/36622150
+function checkLineClears() {
+    for (let row = 0; row < playfieldMatrix.length; row++) {
+        if (!playfieldMatrix[row].includes(0)) {
+            playfieldMatrix.splice(row, 1);
+            playfieldMatrix.splice(0, 0, Array(10).fill(0));
         }
     }
 }
