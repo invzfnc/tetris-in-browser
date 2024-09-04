@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
-        <title>tetris</title>
-        <link rel="stylesheet" href="style.css"></link>
-        <script src="app.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tetris in Browser</title>
+        <link rel="stylesheet" href="styles/title.css">
     </head>
     <body>
-        <!-- centering and layering canvas: https://stackoverflow.com/a/17349259-->
-        <div class="canvas">
-            <canvas id="grids"></canvas>
-            <canvas id="playfield"></canvas>
+        <div class="container">
+            <div class="Tetris">Tetris</div>
         </div>
+        <button onclick="startGame()">Start</button>
+        <script>
+            function startGame() {
+                window.location.href = "game.html";
+            }
+        </script>
     </body>
 </html>

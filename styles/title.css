@@ -1,0 +1,99 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  background-image: url('../assets/title-background.png');
+  background-size: cover; /* Ensure the background image covers the entire screen */
+  background-position: center; /* Center the background image */
+  overflow: hidden; /* Prevent scrolling */
+}
+
+@font-face {
+  font-family: neon;
+  src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/707108/neon.ttf);
+}
+
+.Tetris {
+  font-family: neon;
+  color: #ff00cc;
+  font-size: calc(6rem + 6vw + 6vh); /* More balanced flexibility */
+  line-height: 1.1; /* Adjusted line height for better spacing */
+  text-shadow: 0 0 3vw #ff00cc; /* Initial shadow */
+  margin-bottom: 0.6em; /* Adjust space between title and button */
+  animation: twinkle 2s infinite; /* Slow twinkling effect */
+}
+
+.container {
+  text-align: center; 
+  margin-top: -6em; /* Move the container (and its content) upwards */
+}
+
+@keyframes twinkle {
+  0% {
+    text-shadow: 0 0 3vw #ff00cc;
+  }
+  50% {
+    text-shadow: 0 0 5vw #ff00cc;
+  }
+}
+
+button {
+  background-color: rgb(0, 255, 17); /* Background color of the button */
+  border: none; /* Remove default border */
+  color: rgb(255, 255, 255); /* Text color */
+  padding: 0.5em 2em; /* Padding inside the button using em units */
+  font-size: 2em; /* Font size of the button text using em units */
+  border-radius: 0.5em; /* Rounded corners using em units */
+  cursor: pointer; /* Pointer cursor on hover */
+  outline: none; /* Remove default focus outline */
+  transition: background-color 0.3s, transform 0.3s, text-shadow 0.3s; /* Smooth transition for non-animated properties */
+  position: relative; /* Required for top positioning */
+  top: 0; /* Remove any additional spacing from the top */
+  font-family: 'Times New Roman', Times, serif; /* Font style for text inside button */
+  box-shadow: 0 0 3vw rgb(0, 255, 17); /* Initial glowing button effect */
+  animation: twinkle-box 2s infinite; /* Apply twinkle animation to the button's box-shadow */
+}
+
+@keyframes twinkle-box {
+  0% {
+    box-shadow: 0 0 3vw rgb(0, 255, 17);
+  }
+  50% {
+    box-shadow: 0 0 5vw rgb(0, 255, 17);
+  }
+  100% {
+    box-shadow: 0 0 3vw rgb(0, 255, 17);
+  }
+}
+
+button:hover {
+  background-color: #d4ff00; /* Background color on hover */
+  transform: scale(1.05); /* Slightly enlarge the button */
+  text-shadow: 0 0 1.5em #d4ff00, 0 0 2.5em #d4ff00, 0 0 3.5em #d4ff00; /* Enhanced glowing text effect using em units */
+  box-shadow: 0 0 1.5em #d4ff00; /* Initial glowing button effect on hover */
+  animation: hover-twinkle 2s infinite; /* Apply hover twinkle animation */
+}
+
+@keyframes hover-twinkle {
+  0% {
+    box-shadow: 0 0 3em #d4ff00;
+  }
+  50% {
+    box-shadow: 0 0 5vw #d4ff00;
+  }
+  100% {
+    box-shadow: 0 0 3em #d4ff00;
+  }
+}
+
+button:active {
+  background-color: #00e022; /* Background color when clicked */
+  transform: scale(0.98); /* Slightly shrink the button on click */
+  text-shadow: 0 0 1em #00e022, 0 0 2em #00e022, 0 0 3em #00e022; /* Reduced glowing text effect using em units */
+  box-shadow: 0 0 1em #00e022; /* Reduced glowing button effect using em units */
+}
