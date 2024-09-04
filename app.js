@@ -103,7 +103,9 @@ let active_tetromino = {
     "color": null,
     "x": null,
     "y": null,
-    "lock": false
+    "lock": false,
+    "lockDelay": false,
+    "lockDelayCooldown": false
 }
 
 // 7-bag randomizer
@@ -119,6 +121,8 @@ function initializeTetromino(name) {
     active_tetromino.x = name == "O" ? 4 : 3;
     active_tetromino.y = 0;
     active_tetromino.lock = false;
+    active_tetromino.lockDelay = false;
+    active_tetromino.lockDelayCooldown = false;
 }
 
 // random number generator
@@ -253,10 +257,19 @@ function drawTetromino() {
 // http://nokarma.org/2011/02/02/javascript-game-development-the-game-loop/index.html
 
 let animation; // holds request id
+let currentTimeStamp; // current timestamp
 let previousTimeStamp; // to compare with timeStamp
 let gameOver = false; // if game ends
 
+const lockDelayMaxDuration = 300; // lock delay time in milliseconds
+const lockDelayMaxCount = 10; // maximum moves before "locked"
+const fallingSpeed = 200; // tetromino falls every x millisecond
+let delayMoveCount = 0; // move count during delay
+let elapsed = 0;
+
 function gameloop(timeStamp) {
+    currentTimeStamp = timeStamp;
+
     if (gameOver) {
         alert("Game over!");
         cancelAnimationFrame(animation); // stop animation
@@ -268,21 +281,34 @@ function gameloop(timeStamp) {
         initializeTetromino(getNextTetromino());
         drawTetromino(); // draw active tetromino
     }
-    const elapsed = timeStamp - previousTimeStamp;
+    
+    elapsed = timeStamp - previousTimeStamp;
     ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
 
-    if (elapsed > 300) { // execute once every x milliseconds (alter falling speed here)
-        if (isValidMove(active_tetromino.y + 1)) {
-            active_tetromino.y++; // fall
-        }
+    if (!active_tetromino.lockDelay && elapsed > fallingSpeed) {
+        active_tetromino.lockDelayCooldown = false;
+        if (isValidMove(active_tetromino.y + 1))
+            active_tetromino.y++;
         else {
             placeTetromino();
             initializeTetromino(getNextTetromino());
         }
+        previousTimeStamp = timeStamp;
+    }
 
-        previousTimeStamp = timeStamp; // point reset
+    // lock delay
+    // https://tetris.wiki/Lock_delay
+    // https://harddrop.com/wiki/lock_delay
+    if (active_tetromino.lockDelay) {
+        if (elapsed >= lockDelayMaxDuration || delayMoveCount >= lockDelayMaxCount) {
+            // reset state
+            elapsed = fallingSpeed;
+            delayMoveCount = 0;
+            active_tetromino.lockDelay = false;
+            active_tetromino.lockDelayCooldown = true;
+        }
     }
 
     animation = requestAnimationFrame(gameloop);
@@ -299,6 +325,17 @@ window.addEventListener("keydown",
 
         // do nothing if tetromino is already in "locked" state
         if (active_tetromino.lock) return;
+
+        if (!active_tetromino.lockDelayCooldown) {
+            if (event.key == "ArrowDown" ||
+                event.key == "ArrowLeft" ||
+                event.key == "ArrowRight") {
+                active_tetromino.lockDelay = true; 
+                elapsed = 0;
+                delayMoveCount++;
+            previousTimeStamp = currentTimeStamp;
+            }
+        }
 
         switch (event.key) {
             // drop
