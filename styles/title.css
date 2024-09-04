@@ -45,7 +45,7 @@ html, body {
 button {
   background-color: rgb(0, 255, 17); /* Background color of the button */
   border: none; /* Remove default border */
-  color: rgb(255, 255, 255); /* Text color */
+  color: rgb(0, 0, 0); /* Text color */
   padding: 0.5em 2em; /* Padding inside the button using em units */
   font-size: 2em; /* Font size of the button text using em units */
   border-radius: 0.5em; /* Rounded corners using em units */
@@ -54,7 +54,7 @@ button {
   transition: background-color 0.3s, transform 0.3s, text-shadow 0.3s; /* Smooth transition for non-animated properties */
   position: relative; /* Required for top positioning */
   top: 0; /* Remove any additional spacing from the top */
-  font-family: 'Times New Roman', Times, serif; /* Font style for text inside button */
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; /* Font style for text inside button */
   box-shadow: 0 0 3vw rgb(0, 255, 17); /* Initial glowing button effect */
   animation: twinkle-box 2s infinite; /* Apply twinkle animation to the button's box-shadow */
 }
