@@ -208,6 +208,12 @@ function checkLineClears() {
     }
 }
 
+// rotate square matrix clockwise 90 degrees
+// https://stackoverflow.com/a/58668351
+function rotate(matrix) {
+    return matrix[0].map((val, index) => matrix.map(row => row[index]).reverse());
+}
+
 // how to draw grids on canva: https://stackoverflow.com/a/64802566
 function drawGrid() {
     ctx_grids.strokeStyle = "rgb(100, 100, 100)";
@@ -317,6 +323,15 @@ window.addEventListener("keydown",
             case "ArrowRight":
                 if (isValidMove(active_tetromino.y, active_tetromino.x + 1)) {
                     active_tetromino.x++;
+                }
+                break;
+            // rotate
+            case "ArrowUp":
+                transformed = rotate(active_tetromino.matrix);
+                if (isValidMove(active_tetromino.y,
+                                active_tetromino.x,
+                                transformed)) {
+                    active_tetromino.matrix = transformed;
                 }
                 break;
             // hard drop
