@@ -87,13 +87,13 @@ const tetromino_matrix = {
 
 // tetromino colors
 const tetromino_colors = {
-    "I": "cyan",
-    "J": "blue",
-    "L": "orange",
-    "O": "yellow",
-    "S": "green",
-    "T": "purple",
-    "Z": "red"
+    "I": "#80DEEA",
+    "J": "#64B5F6",
+    "L": "#FFB74D",
+    "O": "#FFF59D",
+    "S": "#4DB6AC",
+    "T": "#CE93D8",
+    "Z": "#F57C6E"
 }
 
 // stores properties of current tetromino
@@ -268,8 +268,8 @@ let previousTimeStamp; // to compare with timeStamp
 let gameOver = false; // if game ends
 
 const lockDelayMaxDuration = 300; // lock delay time in milliseconds
-const lockDelayMaxCount = 10; // maximum moves before "locked"
-const fallingSpeed = 200; // tetromino falls every x millisecond
+const lockDelayMaxCount = 5; // maximum moves before "locked"
+const fallingSpeed = 500; // tetromino falls every x millisecond
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 

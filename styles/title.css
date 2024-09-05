@@ -35,7 +35,7 @@ html, body {
 
 @keyframes twinkle {
   0% {
-    text-shadow: 0 0 3vw #ff00cc;
+    text-shadow: 0 0 3vw #ff00cc; 
   }
   50% {
     text-shadow: 0 0 5vw #ff00cc;
@@ -45,7 +45,7 @@ html, body {
 button {
   background-color: rgb(0, 255, 17); /* Background color of the button */
   border: none; /* Remove default border */
-  color: rgb(0, 0, 0); /* Text color */
+  color: rgb(13, 13, 13); /* Text color */
   padding: 0.5em 2em; /* Padding inside the button using em units */
   font-size: 2em; /* Font size of the button text using em units */
   border-radius: 0.5em; /* Rounded corners using em units */
