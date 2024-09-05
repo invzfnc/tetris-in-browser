@@ -269,7 +269,7 @@ let gameOver = false; // if game ends
 
 const lockDelayMaxDuration = 300; // lock delay time in milliseconds
 const lockDelayMaxCount = 5; // maximum moves before "locked"
-const fallingSpeed = 500; // tetromino falls every x millisecond
+const fallingSpeed = 200; // tetromino falls every x millisecond
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 
@@ -364,6 +364,7 @@ window.addEventListener("keydown",
                 break;
             // rotate
             case "ArrowUp":
+                if (event.repeat) return;
                 transformed = rotate(active_tetromino.matrix);
                 if (isValidMove(active_tetromino.y,
                                 active_tetromino.x,
