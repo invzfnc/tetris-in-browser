@@ -16,14 +16,17 @@ div.middle {
     margin-right: auto;
 }
 
-.left {
+.left, .right {
     color: white;
     margin: 20px;
-    width: 250px;
     padding: 20px;
     border: 1px solid rgb(100, 100, 100);
     font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
+    font-size: 15px;
+}
+
+#timeElapsed {
+    font-size: 30px;
 }
 
 #playfield {

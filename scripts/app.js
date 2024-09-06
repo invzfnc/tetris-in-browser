@@ -12,18 +12,24 @@ let ctxPlayfield = playfield.getContext("2d");
 let grids = document.getElementById("grids");
 let ctxGrids = grids.getContext("2d");
 
+let holdQueueBox = document.getElementById("hold");
+let ctxHoldQueue = holdQueueBox.getContext("2d");
+
 // displayed/drawn grids
 // 10*20 grids with each of them sized 35
 const gridSize = 35;
 const gridRows = 20;
 const gridColumns = 10;
 
-// sets width and height of both canvas
+// sets width and height of canvas
 grids.width = gridColumns * gridSize;
 grids.height = gridRows * gridSize;
 
 playfield.width = gridColumns * gridSize;
 playfield.height = gridRows * gridSize;
+
+holdQueueBox.width = 4 * gridSize;
+holdQueueBox.height = 4 * gridSize;
 
 // 2D array/matrix to store playfield state
 let playfieldMatrix = [];
@@ -267,11 +273,11 @@ function hold() {
     if (holdQueue) {
         // swapping two variables
         // https://stackoverflow.com/a/25910841
-        [holdQueue, activeTetromino.name] = [activeTetromino.name, holdQueue];
+        [holdQueue, activeTetromino] = [activeTetromino, holdQueue];
         activeTetromino = new tetromino(activeTetromino.name);
     }
     else {
-        holdQueue = activeTetromino.name;
+        holdQueue = new tetromino(activeTetromino.name);
         activeTetromino = new tetromino(getNextTetromino());
     }
 
@@ -300,6 +306,19 @@ function drawTetromino() {
             if (activeTetromino.matrix[row][col]) {
                 ctxPlayfield.fillRect((activeTetromino.x + col) * gridSize, 
                 (activeTetromino.y + row - 1) * gridSize, gridSize, gridSize);
+            }
+        }
+    }
+}
+
+// draws hold queue on screen
+function drawHoldQueue() {
+    ctxHoldQueue.fillStyle = holdQueue.color;
+    for (let row = 0; row < holdQueue.matrix.length; row++) {
+        for (let col = 0; col < holdQueue.matrix[row].length; col++) {
+            if (holdQueue.matrix[row][col]) {
+                ctxHoldQueue.fillRect(col * gridSize, row * gridSize, 
+                                      gridSize - 1, gridSize - 1);
             }
         }
     }
@@ -367,10 +386,15 @@ function gameloop(timeStamp) {
     }
     
     elapsed = timeStamp - previousTimeStamp;
-    ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+
+    // clear previous frame
+    ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height);
+    ctxHoldQueue.clearRect(0, 0, holdQueueBox.width, holdQueueBox.height);
+
     drawPlacementPreview(); // draw placement preview
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
+    if (holdQueue) drawHoldQueue(); // draw hold queue
 
     if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
         activeTetromino.lockDelayCooldown = false;
