@@ -234,9 +234,16 @@ function checkLineClears() {
     for (let row = 0; row < playfieldMatrix.length; row++) {
         if (!playfieldMatrix[row].includes(0)) {
             linesCleared++;
-            level = Math.floor(linesCleared / 5 + 1);
+
+            let currentLevel = Math.floor(linesCleared / 5) + 1;
+            if (currentLevel != level) { // increment
+                level = currentLevel;
+                fallingSpeed *= speedIncreaseConstant;
+            }
+
             document.getElementById("linesCleared").textContent = linesCleared;
             document.getElementById("level").textContent = level;
+
             playfieldMatrix.splice(row, 1);
             playfieldMatrix.splice(0, 0, Array(10).fill(0));
         }
@@ -317,7 +324,9 @@ let gameOver = false; // if game ends
 
 const lockDelayMaxDuration = 300; // lock delay time in milliseconds
 const lockDelayMaxCount = 5; // maximum moves before "locked"
-const fallingSpeed = 200; // tetromino falls every x millisecond
+const speedIncreaseConstant = 0.7;
+const initialSpeed = 400; // tetromino falls every x millisecond
+let fallingSpeed = initialSpeed;
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 
@@ -391,7 +400,8 @@ window.addEventListener("keydown",
         if (!active_tetromino.lockDelayCooldown) {
             if (event.key == "ArrowDown" ||
                 event.key == "ArrowLeft" ||
-                event.key == "ArrowRight") {
+                event.key == "ArrowRight" ||
+                event.key == "ArrowUp") {
                 active_tetromino.lockDelay = true; 
                 elapsed = 0;
                 delayMoveCount++;
