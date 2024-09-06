@@ -186,9 +186,9 @@ function isValidMove(y = active_tetromino.y,
                      x = active_tetromino.x, 
                      matrix = active_tetromino.matrix) {
     for (let row = 0; row < active_tetromino.matrix.length; row++) {
-        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+        for (let col = 0; col < matrix[row].length; col++) {
             // if piece is empty
-            if (!active_tetromino.matrix[row][col])
+            if (!matrix[row][col])
                 continue;
 
             // out of bound (horizontally)
