@@ -8,9 +8,33 @@
     </head>
     <body>
         <!-- centering and layering canvas: https://stackoverflow.com/a/17349259-->
-        <div class="canvas">
+        <div class="canvas left">
+            <div id="icon"></div>
+
+            <div id="instructions">
+                <p><b>Controls</b></p>
+                <p>Up: Rotate</p>
+                <p>Down: Soft drop</p>
+                <p>Left: Move left</p>
+                <p>Right: Move right</p>
+                <p>Space: Hard drop</p>
+            </div>
+
+            <div id="scores">
+                <p><span>Level: </span><span id="level">1</span></p>
+                <p><span>Lines cleared: </span><span id="linesCleared">0</span></p>
+                <p><span>Time elapsed: </span><span id="timeElapsed">0</span></p>
+            </div>
+        </div>
+
+        <div class="canvas middle">
             <canvas id="grids"></canvas>
             <canvas id="playfield"></canvas>
+        </div>
+
+        <div class="canvas right">
+            <canvas id="hold"></canvas>
+            <canvas id="preview"></canvas>
         </div>
     </body>
 </html>
