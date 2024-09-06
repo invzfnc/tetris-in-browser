@@ -111,6 +111,33 @@ let active_tetromino = {
 // 7-bag randomizer
 let tetrominoSequence = [];
 
+class Timer {
+    constructor() {
+        this.timeStamp = 0;
+        this.totalTimeElapsed = 0
+    }
+
+    get timeElapsed() {
+        let timeElapsed = Date.now() - this.timeStamp;
+        this.totalTimeElapsed += timeElapsed;
+        this.timeStamp = Date.now();
+        return this.totalTimeElapsed / 1000;
+    }
+
+    start() {
+        this.timeStamp = Date.now();
+    }
+
+    stop() {
+        this.timeStamp = 0;
+    }
+
+    reset() {
+        this.timeStamp = 0;
+        this.totalTimeElapsed = 0;
+    }
+}
+
 // initialize values of active_tetromino
 function initializeTetromino(name) {
     active_tetromino.name = name;
@@ -273,6 +300,9 @@ const fallingSpeed = 200; // tetromino falls every x millisecond
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 
+let timer = new Timer();
+timer.start();
+
 function gameloop(timeStamp) {
     currentTimeStamp = timeStamp;
 
@@ -316,6 +346,8 @@ function gameloop(timeStamp) {
             active_tetromino.lockDelayCooldown = true;
         }
     }
+
+    document.getElementById("timeElapsed").textContent = timer.timeElapsed;
 
     animation = requestAnimationFrame(gameloop);
 }
