@@ -7,10 +7,10 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 let playfield = document.getElementById("playfield");
-let ctx_playfield = playfield.getContext("2d");
+let ctxPlayfield = playfield.getContext("2d");
 
 let grids = document.getElementById("grids");
-let ctx_grids = grids.getContext("2d");
+let ctxGrids = grids.getContext("2d");
 
 // displayed/drawn grids
 // 10*20 grids with each of them sized 35
@@ -41,7 +41,7 @@ for (let row = 0; row < gridRows + 1; row++) {
 
 // https://tetris.fandom.com/wiki/SRS
 // tetromino shape matrix
-const tetromino_matrix = {
+const tetrominoMatrix = {
     "I": [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
@@ -86,7 +86,7 @@ const tetromino_matrix = {
 }
 
 // tetromino colors
-const tetromino_colors = {
+const tetrominoColors = {
     "I": "#80DEEA",
     "J": "#64B5F6",
     "L": "#FFB74D",
@@ -97,7 +97,7 @@ const tetromino_colors = {
 }
 
 // stores properties of current tetromino
-let active_tetromino = {
+let activeTetromino = {
     "name": null,
     "matrix": null,
     "color": null,
@@ -138,18 +138,18 @@ class Timer {
     }
 }
 
-// initialize values of active_tetromino
+// initialize values of activeTetromino
 function initializeTetromino(name) {
-    active_tetromino.name = name;
-    active_tetromino.color = tetromino_colors[name];
-    active_tetromino.matrix = tetromino_matrix[name];
+    activeTetromino.name = name;
+    activeTetromino.color = tetrominoColors[name];
+    activeTetromino.matrix = tetrominoMatrix[name];
     // tetromino spawn position
     // https://harddrop.com/wiki/Spawn_Location
-    active_tetromino.x = name == "O" ? 4 : 3;
-    active_tetromino.y = 0;
-    active_tetromino.lock = false;
-    active_tetromino.lockDelay = false;
-    active_tetromino.lockDelayCooldown = false;
+    activeTetromino.x = name == "O" ? 4 : 3;
+    activeTetromino.y = 0;
+    activeTetromino.lock = false;
+    activeTetromino.lockDelay = false;
+    activeTetromino.lockDelayCooldown = false;
 }
 
 // random number generator
@@ -164,7 +164,7 @@ function randint(min, max) {
 // guideline on generating "random" tetrominos
 // https://tetris.wiki/Random_Generator
 function generateSequence() {
-    const tetrominos = Object.keys(tetromino_matrix);
+    const tetrominos = Object.keys(tetrominoMatrix);
 
     while (tetrominos.length) {
         let index = randint(0, tetrominos.length);
@@ -182,10 +182,10 @@ function getNextTetromino() {
 }
 
 // collision and boundary check
-function isValidMove(y = active_tetromino.y, 
-                     x = active_tetromino.x, 
-                     matrix = active_tetromino.matrix) {
-    for (let row = 0; row < active_tetromino.matrix.length; row++) {
+function isValidMove(y = activeTetromino.y, 
+                     x = activeTetromino.x, 
+                     matrix = activeTetromino.matrix) {
+    for (let row = 0; row < activeTetromino.matrix.length; row++) {
         for (let col = 0; col < matrix[row].length; col++) {
             // if piece is empty
             if (!matrix[row][col])
@@ -206,24 +206,24 @@ function isValidMove(y = active_tetromino.y,
 
 // put/store active tetromino matrix into playfield matrix
 function placeTetromino() {
-    const x = active_tetromino.x;
-    const y = active_tetromino.y;
+    const x = activeTetromino.x;
+    const y = activeTetromino.y;
 
-    for (let row = 0; row < active_tetromino.matrix.length; row++) {
-        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+    for (let row = 0; row < activeTetromino.matrix.length; row++) {
+        for (let col = 0; col < activeTetromino.matrix[row].length; col++) {
             // if piece is empty
-            if (!active_tetromino.matrix[row][col])
+            if (!activeTetromino.matrix[row][col])
                 continue;
 
             // check if placement has any part offscreen
             if (y + row <= 1) gameOver = true;
 
-            playfieldMatrix[y + row][x + col] = active_tetromino.name;
+            playfieldMatrix[y + row][x + col] = activeTetromino.name;
         }
     }
 
     // lock tetromino after placement
-    active_tetromino.lock = true;
+    activeTetromino.lock = true;
     
     // disable hold queue lock
     holdQueueLock = false;
@@ -261,11 +261,11 @@ function rotate(matrix) {
 
 // how to draw grids on canva: https://stackoverflow.com/a/64802566
 function drawGrid() {
-    ctx_grids.strokeStyle = "rgb(100, 100, 100)";
+    ctxGrids.strokeStyle = "rgb(100, 100, 100)";
 
     for (let x = 0; x <= grids.width; x += gridSize) {
         for (let y = 0; y <= grids.height; y += gridSize)
-            ctx_grids.strokeRect(x, y, gridSize, gridSize);
+            ctxGrids.strokeRect(x, y, gridSize, gridSize);
     }
 }
 
@@ -276,11 +276,11 @@ function hold() {
     if (holdQueue) {
         // swapping two variables
         // https://stackoverflow.com/a/25910841
-        [holdQueue, active_tetromino.name] = [active_tetromino.name, holdQueue];
-        initializeTetromino(active_tetromino.name);
+        [holdQueue, activeTetromino.name] = [activeTetromino.name, holdQueue];
+        initializeTetromino(activeTetromino.name);
     }
     else {
-        holdQueue = active_tetromino.name;
+        holdQueue = activeTetromino.name;
         initializeTetromino(getNextTetromino());
     }
 
@@ -293,22 +293,22 @@ function drawPlayfield() {
         for (let col = 0; col < playfieldMatrix[0].length; col++) {
             let grid = playfieldMatrix[row][col];
             if (grid) {
-                ctx_playfield.fillStyle = tetromino_colors[grid];
-                ctx_playfield.fillRect(col * gridSize, (row - 1) * gridSize,
+                ctxPlayfield.fillStyle = tetrominoColors[grid];
+                ctxPlayfield.fillRect(col * gridSize, (row - 1) * gridSize,
                                        gridSize, gridSize)
             }
         }
     }
 }
 
-// draws active_tetromino on screen
+// draws activeTetromino on screen
 function drawTetromino() {
-    ctx_playfield.fillStyle = active_tetromino.color;
-    for (let row = 0; row < active_tetromino.matrix.length; row++) {
-        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
-            if (active_tetromino.matrix[row][col]) {
-                ctx_playfield.fillRect((active_tetromino.x + col) * gridSize, 
-                (active_tetromino.y + row - 1) * gridSize, gridSize, gridSize);
+    ctxPlayfield.fillStyle = activeTetromino.color;
+    for (let row = 0; row < activeTetromino.matrix.length; row++) {
+        for (let col = 0; col < activeTetromino.matrix[row].length; col++) {
+            if (activeTetromino.matrix[row][col]) {
+                ctxPlayfield.fillRect((activeTetromino.x + col) * gridSize, 
+                (activeTetromino.y + row - 1) * gridSize, gridSize, gridSize);
             }
         }
     }
@@ -316,15 +316,15 @@ function drawTetromino() {
 
 // draws placement preview on screen
 function drawPlacementPreview() {
-    ctx_playfield.fillStyle = "#303030";
-    let y = active_tetromino.y;
+    ctxPlayfield.fillStyle = "#303030";
+    let y = activeTetromino.y;
     while (isValidMove(y)) {
         y++;
     }
-    for (let row = 0; row < active_tetromino.matrix.length; row++) {
-        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
-            if (active_tetromino.matrix[row][col]) {
-                ctx_playfield.fillRect((active_tetromino.x + col) * gridSize,
+    for (let row = 0; row < activeTetromino.matrix.length; row++) {
+        for (let col = 0; col < activeTetromino.matrix[row].length; col++) {
+            if (activeTetromino.matrix[row][col]) {
+                ctxPlayfield.fillRect((activeTetromino.x + col) * gridSize,
             (y + row - 2) * gridSize, gridSize, gridSize);
             }
         }
@@ -375,15 +375,15 @@ function gameloop(timeStamp) {
     }
     
     elapsed = timeStamp - previousTimeStamp;
-    ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+    ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
     drawPlacementPreview(); // draw placement preview
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
 
-    if (!active_tetromino.lockDelay && elapsed > fallingSpeed) {
-        active_tetromino.lockDelayCooldown = false;
-        if (isValidMove(active_tetromino.y + 1))
-            active_tetromino.y++;
+    if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
+        activeTetromino.lockDelayCooldown = false;
+        if (isValidMove(activeTetromino.y + 1))
+            activeTetromino.y++;
         else {
             placeTetromino();
             initializeTetromino(getNextTetromino());
@@ -394,13 +394,13 @@ function gameloop(timeStamp) {
     // lock delay
     // https://tetris.wiki/Lock_delay
     // https://harddrop.com/wiki/lock_delay
-    if (active_tetromino.lockDelay) {
+    if (activeTetromino.lockDelay) {
         if (elapsed >= lockDelayMaxDuration || delayMoveCount >= lockDelayMaxCount) {
             // reset state
             elapsed = fallingSpeed;
             delayMoveCount = 0;
-            active_tetromino.lockDelay = false;
-            active_tetromino.lockDelayCooldown = true;
+            activeTetromino.lockDelay = false;
+            activeTetromino.lockDelayCooldown = true;
         }
     }
 
@@ -419,14 +419,14 @@ window.addEventListener("keydown",
         if (event.defaultPrevented) return;
 
         // do nothing if tetromino is already in "locked" state
-        if (active_tetromino.lock) return;
+        if (activeTetromino.lock) return;
 
-        if (!active_tetromino.lockDelayCooldown) {
+        if (!activeTetromino.lockDelayCooldown) {
             if (event.key == "ArrowDown" ||
                 event.key == "ArrowLeft" ||
                 event.key == "ArrowRight" ||
                 event.key == "ArrowUp") {
-                active_tetromino.lockDelay = true; 
+                activeTetromino.lockDelay = true; 
                 elapsed = 0;
                 delayMoveCount++;
             previousTimeStamp = currentTimeStamp;
@@ -436,38 +436,38 @@ window.addEventListener("keydown",
         switch (event.key) {
             // drop
             case "ArrowDown":
-                if (isValidMove(active_tetromino.y + 1)) {
-                    active_tetromino.y++;
+                if (isValidMove(activeTetromino.y + 1)) {
+                    activeTetromino.y++;
                 }
                 break;
             // move left
             case "ArrowLeft":
-                if (isValidMove(active_tetromino.y, active_tetromino.x - 1)) {
-                    active_tetromino.x--;
+                if (isValidMove(activeTetromino.y, activeTetromino.x - 1)) {
+                    activeTetromino.x--;
                 }
                 break;
             // move right
             case "ArrowRight":
-                if (isValidMove(active_tetromino.y, active_tetromino.x + 1)) {
-                    active_tetromino.x++;
+                if (isValidMove(activeTetromino.y, activeTetromino.x + 1)) {
+                    activeTetromino.x++;
                 }
                 break;
             // rotate
             case "ArrowUp":
                 if (event.repeat) return;
-                transformed = rotate(active_tetromino.matrix);
-                if (isValidMove(active_tetromino.y,
-                                active_tetromino.x,
+                transformed = rotate(activeTetromino.matrix);
+                if (isValidMove(activeTetromino.y,
+                                activeTetromino.x,
                                 transformed)) {
-                    active_tetromino.matrix = transformed;
+                    activeTetromino.matrix = transformed;
                 }
                 break;
             // hard drop
             case " ":
-                while (isValidMove(active_tetromino.y + 1)) {
-                    active_tetromino.y++;
+                while (isValidMove(activeTetromino.y + 1)) {
+                    activeTetromino.y++;
                 }
-                active_tetromino.lock = true;
+                activeTetromino.lock = true;
                 break;
             // hold
             case "c":
