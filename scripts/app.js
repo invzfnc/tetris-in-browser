@@ -96,20 +96,20 @@ const tetrominoColors = {
     "Z": "#F57C6E"
 }
 
-// stores properties of current tetromino
-let activeTetromino = {
-    "name": null,
-    "matrix": null,
-    "color": null,
-    "x": null,
-    "y": null,
-    "lock": false,
-    "lockDelay": false,
-    "lockDelayCooldown": false
+class tetromino {
+    constructor(name) {
+        this.name = name;
+        this.color = tetrominoColors[name];
+        this.matrix = tetrominoMatrix[name];
+        // tetromino spawn position
+        // https://harddrop.com/wiki/Spawn_Location
+        this.x = name == "O" ? 4 : 3;
+        this.y = 0;
+        this.lock = false;
+        this.lockDelay = false;
+        this.lockDelayCooldown = false;
+    }
 }
-
-// 7-bag randomizer
-let tetrominoSequence = [];
 
 class Timer {
     constructor() {
@@ -138,19 +138,8 @@ class Timer {
     }
 }
 
-// initialize values of activeTetromino
-function initializeTetromino(name) {
-    activeTetromino.name = name;
-    activeTetromino.color = tetrominoColors[name];
-    activeTetromino.matrix = tetrominoMatrix[name];
-    // tetromino spawn position
-    // https://harddrop.com/wiki/Spawn_Location
-    activeTetromino.x = name == "O" ? 4 : 3;
-    activeTetromino.y = 0;
-    activeTetromino.lock = false;
-    activeTetromino.lockDelay = false;
-    activeTetromino.lockDelayCooldown = false;
-}
+// 7-bag randomizer
+let tetrominoSequence = [];
 
 // random number generator
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -277,11 +266,11 @@ function hold() {
         // swapping two variables
         // https://stackoverflow.com/a/25910841
         [holdQueue, activeTetromino.name] = [activeTetromino.name, holdQueue];
-        initializeTetromino(activeTetromino.name);
+        activeTetromino = new tetromino(activeTetromino.name);
     }
     else {
         holdQueue = activeTetromino.name;
-        initializeTetromino(getNextTetromino());
+        activeTetromino = new tetromino(getNextTetromino());
     }
 
     holdQueueLock = true;
@@ -354,6 +343,7 @@ let fallingSpeed = initialSpeed;
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 
+let activeTetromino = new tetromino(getNextTetromino());
 let linesCleared = 0;
 let level = 1;
 let timer = new Timer();
@@ -370,7 +360,7 @@ function gameloop(timeStamp) {
 
     if (previousTimeStamp == undefined) { // first frame
         previousTimeStamp = timeStamp;
-        initializeTetromino(getNextTetromino());
+        activeTetromino = new tetromino(getNextTetromino());
         drawTetromino(); // draw active tetromino
     }
     
@@ -386,7 +376,7 @@ function gameloop(timeStamp) {
             activeTetromino.y++;
         else {
             placeTetromino();
-            initializeTetromino(getNextTetromino());
+            activeTetromino = new tetromino(getNextTetromino());
         }
         previousTimeStamp = timeStamp;
     }
