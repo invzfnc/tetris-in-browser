@@ -233,6 +233,8 @@ function placeTetromino() {
 function checkLineClears() {
     for (let row = 0; row < playfieldMatrix.length; row++) {
         if (!playfieldMatrix[row].includes(0)) {
+            linesCleared++;
+            document.getElementById("linesCleared").textContent = linesCleared;
             playfieldMatrix.splice(row, 1);
             playfieldMatrix.splice(0, 0, Array(10).fill(0));
         }
@@ -300,6 +302,7 @@ const fallingSpeed = 200; // tetromino falls every x millisecond
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 
+let linesCleared = 0;
 let timer = new Timer();
 timer.start();
 
