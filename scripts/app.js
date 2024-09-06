@@ -286,6 +286,23 @@ function drawTetromino() {
     }
 }
 
+// draw placement preview on screen
+function drawPreviewTetromino() {
+    ctx_playfield.fillStyle = "#303030";
+    let y = active_tetromino.y;
+    while (isValidMove(y)) {
+        y++;
+    }
+    for (let row = 0; row < active_tetromino.matrix.length; row++) {
+        for (let col = 0; col < active_tetromino.matrix[row].length; col++) {
+            if (active_tetromino.matrix[row][col]) {
+                ctx_playfield.fillRect((active_tetromino.x + col) * gridSize,
+            (y + row - 2) * gridSize, gridSize, gridSize);
+            }
+        }
+    }
+}
+
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
@@ -326,6 +343,7 @@ function gameloop(timeStamp) {
     
     elapsed = timeStamp - previousTimeStamp;
     ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
+    drawPreviewTetromino(); // draw placement preview
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
 
