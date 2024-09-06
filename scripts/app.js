@@ -96,6 +96,7 @@ const tetrominoColors = {
     "Z": "#F57C6E"
 }
 
+// stores properties for a tetromino
 class tetromino {
     constructor(name) {
         this.name = name;
@@ -111,6 +112,7 @@ class tetromino {
     }
 }
 
+// times the game (displayed on screen)
 class Timer {
     constructor() {
         this.timeStamp = 0;
