@@ -234,7 +234,9 @@ function checkLineClears() {
     for (let row = 0; row < playfieldMatrix.length; row++) {
         if (!playfieldMatrix[row].includes(0)) {
             linesCleared++;
+            level = Math.floor(linesCleared / 5 + 1);
             document.getElementById("linesCleared").textContent = linesCleared;
+            document.getElementById("level").textContent = level;
             playfieldMatrix.splice(row, 1);
             playfieldMatrix.splice(0, 0, Array(10).fill(0));
         }
@@ -303,6 +305,7 @@ let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
 
 let linesCleared = 0;
+let level = 1;
 let timer = new Timer();
 timer.start();
 
