@@ -224,6 +224,9 @@ function placeTetromino() {
 
     // lock tetromino after placement
     active_tetromino.lock = true;
+    
+    // disable hold queue lock
+    holdQueueLock = false;
 
     checkLineClears();
 }
@@ -266,6 +269,24 @@ function drawGrid() {
     }
 }
 
+// put active tetromino into hold queue
+function hold() {
+    if (holdQueueLock) return; // do nothing if lock is on
+
+    if (holdQueue) {
+        // swapping two variables
+        // https://stackoverflow.com/a/25910841
+        [holdQueue, active_tetromino.name] = [active_tetromino.name, holdQueue];
+        initializeTetromino(active_tetromino.name);
+    }
+    else {
+        holdQueue = active_tetromino.name;
+        initializeTetromino(getNextTetromino());
+    }
+
+    holdQueueLock = true;
+}
+
 // draws playfieldMatrix on screen
 function drawPlayfield() {
     for (let row = 1; row < playfieldMatrix.length; row++) {
@@ -293,8 +314,8 @@ function drawTetromino() {
     }
 }
 
-// draw placement preview on screen
-function drawPreviewTetromino() {
+// draws placement preview on screen
+function drawPlacementPreview() {
     ctx_playfield.fillStyle = "#303030";
     let y = active_tetromino.y;
     while (isValidMove(y)) {
@@ -321,6 +342,9 @@ let animation; // holds request id
 let currentTimeStamp; // current timestamp
 let previousTimeStamp; // to compare with timeStamp
 let gameOver = false; // if game ends
+
+let holdQueue = undefined; // stores held tetromino
+let holdQueueLock = false; // locks hold function if true
 
 const lockDelayMaxDuration = 300; // lock delay time in milliseconds
 const lockDelayMaxCount = 5; // maximum moves before "locked"
@@ -352,7 +376,7 @@ function gameloop(timeStamp) {
     
     elapsed = timeStamp - previousTimeStamp;
     ctx_playfield.clearRect(0, 0, playfield.width, playfield.height); // clear previous frame
-    drawPreviewTetromino(); // draw placement preview
+    drawPlacementPreview(); // draw placement preview
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
 
@@ -444,6 +468,10 @@ window.addEventListener("keydown",
                     active_tetromino.y++;
                 }
                 active_tetromino.lock = true;
+                break;
+            // hold
+            case "c":
+                hold();
                 break;
         }
 
