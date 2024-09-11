@@ -389,7 +389,6 @@ let gameOver = false; // if game ends
 let holdQueue = undefined; // stores held tetromino
 let holdQueueLock = false; // locks hold function if true
 
-const lockDelayMaxDuration = 300; // lock delay time in milliseconds
 const lockDelayMaxCount = 5; // maximum moves before "locked"
 const speedIncreaseConstant = 0.7;
 const initialSpeed = 400; // tetromino falls every x millisecond
@@ -446,7 +445,7 @@ function gameloop(timeStamp) {
     // https://tetris.wiki/Lock_delay
     // https://harddrop.com/wiki/lock_delay
     if (activeTetromino.lockDelay) {
-        if (elapsed >= lockDelayMaxDuration || delayMoveCount >= lockDelayMaxCount) {
+        if (elapsed >= fallingSpeed || delayMoveCount >= lockDelayMaxCount) {
             // reset state
             elapsed = fallingSpeed;
             delayMoveCount = 0;
