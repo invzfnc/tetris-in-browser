@@ -520,7 +520,7 @@ window.addEventListener("keydown",
                 activeTetromino.lock = true;
                 break;
             // hold
-            case "c":
+            case "c": case "Shift":
                 hold();
                 break;
         }
