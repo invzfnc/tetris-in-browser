@@ -12,14 +12,19 @@ let ctxPlayfield = playfield.getContext("2d");
 let grids = document.getElementById("grids");
 let ctxGrids = grids.getContext("2d");
 
-let holdQueueBox = document.getElementById("hold");
+let holdQueueBox = document.getElementById("holdQueue");
 let ctxHoldQueue = holdQueueBox.getContext("2d");
+
+let previewPane = document.getElementById("previewPane")
+let ctxPreviewPane = previewPane.getContext("2d");
 
 // displayed/drawn grids
 // 10*20 grids with each of them sized 35
 const gridSize = 35;
 const gridRows = 20;
 const gridColumns = 10;
+
+const previewNumber = 3; // number of pieces to show in preview pane
 
 // sets width and height of canvas
 grids.width = gridColumns * gridSize;
@@ -30,6 +35,9 @@ playfield.height = gridRows * gridSize;
 
 holdQueueBox.width = 4 * gridSize;
 holdQueueBox.height = 4 * gridSize;
+
+previewPane.width = 4 * gridSize;
+previewPane.height = previewNumber * gridSize * 4;
 
 // 2D array/matrix to store playfield state
 let playfieldMatrix = [];
@@ -146,7 +154,7 @@ class Timer {
     }
 }
 
-// 7-bag randomizer
+// 7-bag (x2) randomizer
 let tetrominoSequence = [];
 
 // random number generator
@@ -160,22 +168,30 @@ function randint(min, max) {
 
 // guideline on generating "random" tetrominos
 // https://tetris.wiki/Random_Generator
-function generateSequence() {
-    const tetrominos = Object.keys(tetrominoMatrix);
-
-    while (tetrominos.length) {
-        let index = randint(0, tetrominos.length);
-        tetrominoSequence.push(tetrominos[index]);
-        tetrominos.splice(index, 1);
+function generateSequence(set = 1) {
+    for (i = 0; i < set; i++) {
+        let tetrominos = Object.keys(tetrominoMatrix);
+        while (tetrominos.length) {
+            let index = randint(0, tetrominos.length);
+            tetrominoSequence.push(tetrominos[index]);
+            tetrominos.splice(index, 1);
+        }
     }
 }
 
 // pop and return name of next tetromino in sequence
 function getNextTetromino() {
+    // initialize 2x7 tetrominos
     if (tetrominoSequence.length == 0) {
+        generateSequence(2);
+    }
+    // generate sequence of 7
+    if (tetrominoSequence.length <= 7) {
         generateSequence();
     }
-    return tetrominoSequence.pop();
+
+    // return first value
+    return tetrominoSequence.shift();
 }
 
 // collision and boundary check
@@ -341,6 +357,26 @@ function drawPlacementPreview() {
     }
 }
 
+// draws preview pane on screen
+function drawPreviewPane() {
+    let startingPosition = 0;
+
+    for (i = 0; i < previewNumber; i++) {
+        let previewPiece = new tetromino(tetrominoSequence[i]);
+        ctxPreviewPane.fillStyle = previewPiece.color;
+        for (let row = 0; row < previewPiece.matrix.length; row++) {
+            for (let col = 0; col < previewPiece.matrix[row].length; col++) {
+                if (previewPiece.matrix[row][col]) {
+                    ctxPreviewPane.fillRect(col * gridSize, 
+                        startingPosition + row * gridSize,
+                        gridSize - 1, gridSize - 1);
+                }
+            }
+        }
+        startingPosition += (4 * gridSize);
+    }
+}
+
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
@@ -390,10 +426,12 @@ function gameloop(timeStamp) {
     // clear previous frame
     ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height);
     ctxHoldQueue.clearRect(0, 0, holdQueueBox.width, holdQueueBox.height);
+    ctxPreviewPane.clearRect(0, 0, previewPane.width, previewPane.height);
 
     drawPlacementPreview(); // draw placement preview
     drawPlayfield(); // draw playfield matrix
     drawTetromino(); // draw active tetromino
+    drawPreviewPane(); // draw the next tetrominos
     if (holdQueue) drawHoldQueue(); // draw hold queue
 
     if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
