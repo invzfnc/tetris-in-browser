@@ -235,9 +235,6 @@ function placeTetromino() {
         }
     }
 
-    // lock tetromino after placement
-    activeTetromino.lock = true;
-    
     // disable hold queue lock
     holdQueueLock = false;
 
