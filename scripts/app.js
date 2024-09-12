@@ -388,6 +388,12 @@ function resetGame() {
     hidePauseMenu();
 }
 
+// https://stackoverflow.com/a/16562671
+// return to title page
+function quitToTitle() {
+    location.href = "index.html";
+}
+
 function showPauseMenu() {
     gamePaused = true;
     document.getElementById("pauseMenu").style.display = "block";
@@ -404,6 +410,7 @@ function hidePauseMenu() {
 // define button actions
 document.getElementById("btnResume").addEventListener("click", hidePauseMenu);
 document.getElementById("btnRestart").addEventListener("click", resetGame);
+document.getElementById("btnQuit").addEventListener("click", quitToTitle);
 
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
