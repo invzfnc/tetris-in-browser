@@ -375,14 +375,19 @@ function drawPreviewPane() {
 }
 
 function showPauseMenu() {
+    gamePaused = true;
     document.getElementById("pauseMenu").style.display = "block";
     timer.stop();
 }
 
 function hidePauseMenu() {
+    gamePaused = false;
     document.getElementById("pauseMenu").style.display = "none";
     timer.start();
 }
+
+// define button actions
+document.getElementById("btnResume").addEventListener("click", hidePauseMenu);
 
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
@@ -489,7 +494,6 @@ window.addEventListener("keydown",
             else {
                 showPauseMenu();
             }
-            gamePaused = !gamePaused;
         }
 
         // do nothing if tetromino is already in "locked" state
