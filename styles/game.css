@@ -10,19 +10,39 @@ body {
     display: flex;
 }
 
-div.middle {
+.middle {
     border: 1px solid rgb(100, 100, 100);
-    margin-left: auto;
-    margin-right: auto;
+}
+
+.left {
+    float: right;
+}
+
+.right {
+    float: left;
 }
 
 .left, .right {
     color: white;
     margin: 20px;
     padding: 20px;
-    border: 1px solid rgb(100, 100, 100);
     font-family: 'Courier New', Courier, monospace;
-    font-size: 15px;
+    font-size: 16px;
+}
+
+#icon,
+#instructions,
+#scores,
+#holdQueue,
+#previewPane {
+    padding: 30px;
+    border: 1px solid rgb(100, 100, 100);
+}
+
+#instructions,
+#scores {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 #timeElapsed {

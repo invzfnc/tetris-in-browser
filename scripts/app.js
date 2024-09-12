@@ -37,7 +37,7 @@ holdQueueBox.width = 4 * gridSize;
 holdQueueBox.height = 4 * gridSize;
 
 previewPane.width = 4 * gridSize;
-previewPane.height = previewNumber * gridSize * 4;
+previewPane.height = previewNumber * gridSize * 3.3;
 
 // 2D array/matrix to store playfield state
 let playfieldMatrix = [];
