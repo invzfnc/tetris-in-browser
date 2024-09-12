@@ -42,17 +42,6 @@ previewPane.height = previewNumber * gridSize * 3.3;
 // 2D array/matrix to store playfield state
 let playfieldMatrix = [];
 
-// populate the empty state
-// extra row for vanish space
-// playfield guidelines: https://tetris.fandom.com/wiki/Playfield
-for (let row = 0; row < gridRows + 1; row++) {
-    playfieldMatrix[row] = [];
-    
-    for (let col = 0; col < gridColumns ; col++) {
-        playfieldMatrix[row][col] = 0;
-    }
-}
-
 // https://tetris.fandom.com/wiki/SRS
 // tetromino shape matrix
 const tetrominoMatrix = {
@@ -179,6 +168,19 @@ function generateSequence(set = 1) {
     }
 }
 
+// populate the empty state
+// extra row for vanish space
+// playfield guidelines: https://tetris.fandom.com/wiki/Playfield
+function initializePlayfield() {
+    for (let row = 0; row < gridRows + 1; row++) {
+        playfieldMatrix[row] = [];
+        
+        for (let col = 0; col < gridColumns ; col++) {
+            playfieldMatrix[row][col] = 0;
+        }
+    }
+}
+
 // pop and return name of next tetromino in sequence
 function getNextTetromino() {
     // initialize 2x7 tetrominos
@@ -253,9 +255,6 @@ function checkLineClears() {
                 level = currentLevel;
                 fallingSpeed *= speedIncreaseConstant;
             }
-
-            document.getElementById("linesCleared").textContent = linesCleared;
-            document.getElementById("level").textContent = level;
 
             playfieldMatrix.splice(row, 1);
             playfieldMatrix.splice(0, 0, Array(10).fill(0));
@@ -374,6 +373,21 @@ function drawPreviewPane() {
     }
 }
 
+function resetGame() {
+    initializePlayfield();
+    tetrominoSequence = [];
+    previousTimeStamp = undefined;
+    //gameOver = false;
+    holdQueue = undefined;
+    holdQueueLock = false;
+    fallingSpeed = initialSpeed;
+    timer.reset();
+    level = 1;
+    linesCleared = 0;
+
+    hidePauseMenu();
+}
+
 function showPauseMenu() {
     gamePaused = true;
     document.getElementById("pauseMenu").style.display = "block";
@@ -386,8 +400,10 @@ function hidePauseMenu() {
     timer.start();
 }
 
+// https://stackoverflow.com/a/62117526
 // define button actions
 document.getElementById("btnResume").addEventListener("click", hidePauseMenu);
+document.getElementById("btnRestart").addEventListener("click", resetGame);
 
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
@@ -411,12 +427,13 @@ const initialSpeed = 400; // tetromino falls every x millisecond
 let fallingSpeed = initialSpeed;
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
+let activeTetromino;
 
-let activeTetromino = new tetromino(getNextTetromino());
 let linesCleared = 0;
 let level = 1;
 let timer = new Timer();
 timer.start();
+initializePlayfield();
 
 function gameloop(timeStamp) {
     currentTimeStamp = timeStamp;
@@ -446,6 +463,9 @@ function gameloop(timeStamp) {
         drawTetromino(); // draw active tetromino
         drawPreviewPane(); // draw the next tetrominos
         if (holdQueue) drawHoldQueue(); // draw hold queue
+        document.getElementById("linesCleared").textContent = linesCleared; // update scores
+        document.getElementById("level").textContent = level;
+
 
         if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
             activeTetromino.lockDelayCooldown = false;
