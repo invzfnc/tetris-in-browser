@@ -374,6 +374,16 @@ function drawPreviewPane() {
     }
 }
 
+function showPauseMenu() {
+    document.getElementById("pauseMenu").style.display = "block";
+    timer.stop();
+}
+
+function hidePauseMenu() {
+    document.getElementById("pauseMenu").style.display = "none";
+    timer.start();
+}
+
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
@@ -385,6 +395,7 @@ let animation; // holds request id
 let currentTimeStamp; // current timestamp
 let previousTimeStamp; // to compare with timeStamp
 let gameOver = false; // if game ends
+let gamePaused = false; // if game is paused
 
 let holdQueue = undefined; // stores held tetromino
 let holdQueueLock = false; // locks hold function if true
@@ -411,51 +422,53 @@ function gameloop(timeStamp) {
         return; // end recursion
     }
 
-    if (previousTimeStamp == undefined) { // first frame
-        previousTimeStamp = timeStamp;
-        activeTetromino = new tetromino(getNextTetromino());
+    if (!gamePaused) {
+        if (previousTimeStamp == undefined) { // first frame
+            previousTimeStamp = timeStamp;
+            activeTetromino = new tetromino(getNextTetromino());
+            drawTetromino(); // draw active tetromino
+        }
+        
+        elapsed = timeStamp - previousTimeStamp;
+
+        // clear previous frame
+        ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height);
+        ctxHoldQueue.clearRect(0, 0, holdQueueBox.width, holdQueueBox.height);
+        ctxPreviewPane.clearRect(0, 0, previewPane.width, previewPane.height);
+
+        drawPlacementPreview(); // draw placement preview
+        drawPlayfield(); // draw playfield matrix
         drawTetromino(); // draw active tetromino
+        drawPreviewPane(); // draw the next tetrominos
+        if (holdQueue) drawHoldQueue(); // draw hold queue
+
+        if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
+            activeTetromino.lockDelayCooldown = false;
+            if (isValidMove(activeTetromino.y + 1))
+                activeTetromino.y++;
+            else {
+                placeTetromino();
+                activeTetromino = new tetromino(getNextTetromino());
+            }
+            previousTimeStamp = timeStamp;
+        }
+
+        // lock delay
+        // https://tetris.wiki/Lock_delay
+        // https://harddrop.com/wiki/lock_delay
+        if (activeTetromino.lockDelay) {
+            if (elapsed >= fallingSpeed || delayMoveCount >= lockDelayMaxCount) {
+                // reset state
+                elapsed = fallingSpeed;
+                delayMoveCount = 0;
+                activeTetromino.lockDelay = false;
+                activeTetromino.lockDelayCooldown = true;
+            }
+        }
+
+        document.getElementById("timeElapsed").textContent = timer.timeElapsed;
     }
     
-    elapsed = timeStamp - previousTimeStamp;
-
-    // clear previous frame
-    ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height);
-    ctxHoldQueue.clearRect(0, 0, holdQueueBox.width, holdQueueBox.height);
-    ctxPreviewPane.clearRect(0, 0, previewPane.width, previewPane.height);
-
-    drawPlacementPreview(); // draw placement preview
-    drawPlayfield(); // draw playfield matrix
-    drawTetromino(); // draw active tetromino
-    drawPreviewPane(); // draw the next tetrominos
-    if (holdQueue) drawHoldQueue(); // draw hold queue
-
-    if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
-        activeTetromino.lockDelayCooldown = false;
-        if (isValidMove(activeTetromino.y + 1))
-            activeTetromino.y++;
-        else {
-            placeTetromino();
-            activeTetromino = new tetromino(getNextTetromino());
-        }
-        previousTimeStamp = timeStamp;
-    }
-
-    // lock delay
-    // https://tetris.wiki/Lock_delay
-    // https://harddrop.com/wiki/lock_delay
-    if (activeTetromino.lockDelay) {
-        if (elapsed >= fallingSpeed || delayMoveCount >= lockDelayMaxCount) {
-            // reset state
-            elapsed = fallingSpeed;
-            delayMoveCount = 0;
-            activeTetromino.lockDelay = false;
-            activeTetromino.lockDelayCooldown = true;
-        }
-    }
-
-    document.getElementById("timeElapsed").textContent = timer.timeElapsed;
-
     animation = requestAnimationFrame(gameloop);
 }
 
@@ -467,6 +480,17 @@ window.addEventListener("keydown",
 
         // do nothing if the event was already processed
         if (event.defaultPrevented) return;
+
+        // toggle pause menu
+        if (event.key == "Escape") {
+            if (gamePaused) {
+                hidePauseMenu();
+            }
+            else {
+                showPauseMenu();
+            }
+            gamePaused = !gamePaused;
+        }
 
         // do nothing if tetromino is already in "locked" state
         if (activeTetromino.lock) return;

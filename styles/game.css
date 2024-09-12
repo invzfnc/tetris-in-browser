@@ -8,6 +8,9 @@ body {
     align-items: center;
     justify-content: center;
     display: flex;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    color: white;
 }
 
 .middle {
@@ -23,11 +26,8 @@ body {
 }
 
 .left, .right {
-    color: white;
     margin: 20px;
     padding: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 16px;
 }
 
 #icon,
@@ -56,4 +56,20 @@ body {
 #grids {
     position: absolute;
     z-index: 0;
+}
+
+#pauseMenu {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(30, 30, 20, 0.5);
+    text-align: center;
+    font-size: 50px;
+}
+
+#pauseMenu button {
+    display: block;
+    margin: auto;
 }
