@@ -287,6 +287,7 @@ function hold() {
         // https://stackoverflow.com/a/25910841
         [holdQueue, activeTetromino] = [activeTetromino, holdQueue];
         activeTetromino = new tetromino(activeTetromino.name);
+        holdQueue = new tetromino(holdQueue.name);
     }
     else {
         holdQueue = new tetromino(activeTetromino.name);
