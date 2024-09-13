@@ -67,7 +67,7 @@ body {
     width: 100%;
     background-color: rgba(30, 30, 20, 0.6);
     text-align: center;
-    font-size: 50px;
+    font-size: 52px;
 }
 
 #pauseMenuContent,
@@ -77,16 +77,18 @@ body {
     margin: auto;
 }
 
-#pauseMenu button {
+#pauseMenu button,
+#gameOverScreen button {
     display: block;
     margin: 20px auto;
     border: none;
     background-color: transparent;
     color: white;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 25px;
+    font-size: 27px;
 }
 
-#pauseMenu button:hover {
+#pauseMenu button:hover,
+#gameOverScreen button:hover {
     color: lightgrey;
 }
