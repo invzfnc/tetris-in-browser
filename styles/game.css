@@ -92,3 +92,7 @@ body {
 #gameOverScreen button:hover {
     color: lightgrey;
 }
+
+::selection {
+    background: transparent;
+}

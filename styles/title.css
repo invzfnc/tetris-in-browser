@@ -97,3 +97,7 @@ button:active {
   text-shadow: 0 0 1em #00e022, 0 0 2em #00e022, 0 0 3em #00e022; /* Reduced glowing text effect using em units */
   box-shadow: 0 0 1em #00e022; /* Reduced glowing button effect using em units */
 }
+
+::selection {
+  background: transparent;
+}
