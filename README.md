@@ -12,7 +12,7 @@ A classic Tetris game built using HTML, CSS, and vanilla Javascript.
 
 ## Usage
 
-A running instance is available through this [link](https://eve-1010.github.io/tetris-in-browser/game.html).
+A running instance is available through this [link](https://eve-1010.github.io/tetris-in-browser/index.html).
  
 ## Controls
 
