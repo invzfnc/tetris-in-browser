@@ -58,7 +58,8 @@ body {
     z-index: 0;
 }
 
-#pauseMenu {
+#pauseMenu,
+#gameOverScreen {
     display: none;
     position: absolute;
     z-index: 2;
@@ -69,7 +70,8 @@ body {
     font-size: 50px;
 }
 
-#pauseMenuContent {
+#pauseMenuContent,
+#gameOverScreenContent {
     position: relative;
     top: 25%;
     margin: auto;

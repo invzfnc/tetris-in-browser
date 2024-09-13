@@ -377,7 +377,6 @@ function resetGame() {
     initializePlayfield();
     tetrominoSequence = [];
     previousTimeStamp = undefined;
-    //gameOver = false;
     holdQueue = undefined;
     holdQueueLock = false;
     fallingSpeed = initialSpeed;
@@ -385,7 +384,17 @@ function resetGame() {
     level = 1;
     linesCleared = 0;
 
-    hidePauseMenu();
+    // restart button from game over screen
+    if (gameOver) {
+        document.getElementById("gameOverScreen").style.display = "none";
+        gameOver = false;
+        gamePaused = false;
+        timer.start();
+    }
+    // restart button from pause menu
+    else if (gamePaused) {
+        hidePauseMenu();
+    }
 }
 
 // https://stackoverflow.com/a/16562671
@@ -410,7 +419,9 @@ function hidePauseMenu() {
 // define button actions
 document.getElementById("btnResume").addEventListener("click", hidePauseMenu);
 document.getElementById("btnRestart").addEventListener("click", resetGame);
+document.getElementById("btnRestart1").addEventListener("click", resetGame);
 document.getElementById("btnQuit").addEventListener("click", quitToTitle);
+document.getElementById("btnQuit1").addEventListener("click", quitToTitle);
 
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
@@ -446,9 +457,8 @@ function gameloop(timeStamp) {
     currentTimeStamp = timeStamp;
 
     if (gameOver) {
-        alert("Game over!");
-        cancelAnimationFrame(animation); // stop animation
-        return; // end recursion
+        document.getElementById("gameOverScreen").style.display = "block";
+        gamePaused = true;
     }
 
     if (!gamePaused) {
