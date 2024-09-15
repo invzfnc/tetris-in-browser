@@ -441,7 +441,7 @@ let holdQueue = undefined; // stores held tetromino
 let holdQueueLock = false; // locks hold function if true
 
 const lockDelayMaxCount = 5; // maximum moves before "locked"
-const speedIncreaseConstant = 0.7;
+const speedIncreaseConstant = 0.8;
 const initialSpeed = 400; // tetromino falls every x millisecond
 let fallingSpeed = initialSpeed;
 let delayMoveCount = 0; // move count during delay
