@@ -18,6 +18,8 @@ let ctxHoldQueue = holdQueueBox.getContext("2d");
 let previewPane = document.getElementById("previewPane")
 let ctxPreviewPane = previewPane.getContext("2d");
 
+let backgroundMusic = document.getElementById("backgroundMusic");
+
 // displayed/drawn grids
 // 10*20 grids with each of them sized 35
 const gridSize = 35;
@@ -385,12 +387,16 @@ function resetGame() {
     level = 1;
     linesCleared = 0;
 
+    // replay audio
+    backgroundMusic.currentTime = 0;
+
     // restart button from game over screen
     if (gameOver) {
         document.getElementById("gameOverScreen").style.display = "none";
         gameOver = false;
         gamePaused = false;
         timer.start();
+        backgroundMusic.play();
     }
     // restart button from pause menu
     else if (gamePaused) {
@@ -408,12 +414,14 @@ function showPauseMenu() {
     gamePaused = true;
     document.getElementById("pauseMenu").style.display = "block";
     timer.stop();
+    backgroundMusic.pause();
 }
 
 function hidePauseMenu() {
     gamePaused = false;
     document.getElementById("pauseMenu").style.display = "none";
     timer.start();
+    backgroundMusic.play();
 }
 
 // https://stackoverflow.com/a/62117526
@@ -459,6 +467,7 @@ function gameloop(timeStamp) {
 
     if (gameOver) {
         document.getElementById("gameOverScreen").style.display = "block";
+        backgroundMusic.pause();
         gamePaused = true;
     }
 
