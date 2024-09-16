@@ -524,6 +524,19 @@ function gameloop(timeStamp) {
     animation = requestAnimationFrame(gameloop);
 }
 
+document.addEventListener("visibilitychange", function() {
+    if (document.hidden) {
+        timer.stop();
+        backgroundMusic.pause();
+    }
+    else {
+        if (!gamePaused) {
+            timer.start();
+            backgroundMusic.play();
+        }
+    }
+});
+
 // https://stackoverflow.com/a/43418287
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
 window.addEventListener("keydown",
