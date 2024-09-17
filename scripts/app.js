@@ -20,26 +20,45 @@ let ctxPreviewPane = previewPane.getContext("2d");
 
 let backgroundMusic = document.getElementById("backgroundMusic");
 
-// displayed/drawn grids
 // 10*20 grids with each of them sized 35
-const gridSize = 35;
 const gridRows = 20;
 const gridColumns = 10;
 
-const previewNumber = 3; // number of pieces to show in preview pane
+// number of pieces to show in preview pane
+const previewNumber = 3;
 
-// sets width and height of canvas
-grids.width = gridColumns * gridSize;
-grids.height = gridRows * gridSize;
+// single grid
+let gridSize;
+computeSize();
 
-playfield.width = gridColumns * gridSize;
-playfield.height = gridRows * gridSize;
+// detect window size change
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event
+window.addEventListener("resize", resize);
 
-holdQueueBox.width = 4 * gridSize;
-holdQueueBox.height = 4 * gridSize;
+// checks resolution on different screens
+// https://www.jeffersonscher.com/res/resolution.php
+function computeSize() {
+    // playfield takes up 80% of height
+    gridSize = window.innerHeight * 0.8 / 20;
 
-previewPane.width = 4 * gridSize;
-previewPane.height = previewNumber * gridSize * 3.3;
+    // sets width and height of canvas
+    grids.width = gridColumns * gridSize;
+    grids.height = gridRows * gridSize;
+
+    playfield.width = gridColumns * gridSize;
+    playfield.height = gridRows * gridSize;
+
+    holdQueueBox.width = 4 * gridSize;
+    holdQueueBox.height = 4 * gridSize;
+
+    previewPane.width = 4 * gridSize;
+    previewPane.height = 4 * previewNumber * gridSize - gridSize;
+}
+
+function resize() {
+    computeSize();
+    redrawFrame();
+}
 
 // 2D array/matrix to store playfield state
 let playfieldMatrix = [];
@@ -376,6 +395,24 @@ function drawPreviewPane() {
     }
 }
 
+// erase previous frame and draw new frame on screen
+function redrawFrame() {
+    // clear previous frame
+    ctxGrids.clearRect(0, 0, grids.width, grids.height);
+    ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height);
+    ctxHoldQueue.clearRect(0, 0, holdQueueBox.width, holdQueueBox.height);
+    ctxPreviewPane.clearRect(0, 0, previewPane.width, previewPane.height);
+
+    drawGrid(); // draw grids
+    drawPlacementPreview(); // draw placement preview
+    drawPlayfield(); // draw playfield matrix
+    drawTetromino(); // draw active tetromino
+    drawPreviewPane(); // draw the next tetrominos
+    if (holdQueue) drawHoldQueue(); // draw hold queue
+    document.getElementById("linesCleared").textContent = linesCleared; // update scores
+    document.getElementById("level").textContent = level;
+}
+
 function resetGame() {
     initializePlayfield();
     tetrominoSequence = [];
@@ -480,19 +517,7 @@ function gameloop(timeStamp) {
         
         elapsed = timeStamp - previousTimeStamp;
 
-        // clear previous frame
-        ctxPlayfield.clearRect(0, 0, playfield.width, playfield.height);
-        ctxHoldQueue.clearRect(0, 0, holdQueueBox.width, holdQueueBox.height);
-        ctxPreviewPane.clearRect(0, 0, previewPane.width, previewPane.height);
-
-        drawPlacementPreview(); // draw placement preview
-        drawPlayfield(); // draw playfield matrix
-        drawTetromino(); // draw active tetromino
-        drawPreviewPane(); // draw the next tetrominos
-        if (holdQueue) drawHoldQueue(); // draw hold queue
-        document.getElementById("linesCleared").textContent = linesCleared; // update scores
-        document.getElementById("level").textContent = level;
-
+        redrawFrame();
 
         if (!activeTetromino.lockDelay && elapsed > fallingSpeed) {
             activeTetromino.lockDelayCooldown = false;
@@ -616,7 +641,6 @@ window.addEventListener("keydown",
     }
 )
 
-drawGrid();
 animation = requestAnimationFrame(gameloop);
 
 })

@@ -9,7 +9,7 @@ body {
     justify-content: center;
     display: flex;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 16px;
+    font-size: 2vmin;
     color: white;
 }
 
@@ -26,7 +26,6 @@ body {
 }
 
 .left, .right {
-    margin: 20px;
     padding: 20px;
 }
 
@@ -35,18 +34,32 @@ body {
 #scores,
 #holdQueue,
 #previewPane {
-    padding: 30px;
+    box-sizing: border-box;
+    padding: 2.5vh;
     border: 1px solid rgb(100, 100, 100);
 }
 
-#instructions,
+#icon {
+    height: 8vh;
+}
+
+#instructions {
+    height: 42vh;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+} 
+
 #scores {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    height: 26vh;
 }
 
 #timeElapsed {
-    font-size: 30px;
+    font-size: 3.5vh;
+}
+
+#holdText,
+#nextText {
+    text-align: center;
 }
 
 #playfield {
@@ -66,14 +79,16 @@ body {
     height: 100%;
     width: 100%;
     background-color: rgba(30, 30, 20, 0.6);
+    /* responsive font size */
+    /* https://css-tricks.com/viewport-sized-typography */
     text-align: center;
-    font-size: 52px;
+    font-size: 7vh;
 }
 
 #pauseMenuContent,
 #gameOverScreenContent {
     position: relative;
-    top: 25%;
+    top: 23vh;
     margin: auto;
 }
 
@@ -85,7 +100,7 @@ body {
     background-color: transparent;
     color: white;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 27px;
+    font-size: 3.5vh;
 }
 
 #pauseMenu button:hover,

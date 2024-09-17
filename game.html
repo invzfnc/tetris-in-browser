@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Tetris in Browser</title>
         <link rel="stylesheet" href="styles/game.css"></link>
         <script src="scripts/app.js"></script>
@@ -38,9 +39,9 @@
         </div>
 
         <div class="canvas right">
-            <p>HOLD</p>
+            <p id="holdText">HOLD</p>
             <canvas id="holdQueue"></canvas>
-            <p>PREVIEW</p>
+            <p id="nextText">NEXT</p>
             <canvas id="previewPane"></canvas>
         </div>
 
