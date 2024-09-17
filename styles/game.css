@@ -41,6 +41,12 @@ body {
 
 #icon {
     height: 8vh;
+    padding: 0;
+}
+
+#icon img {
+    height: 100%;
+    width: 100%;
 }
 
 #instructions {
