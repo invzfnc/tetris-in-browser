@@ -499,6 +499,8 @@ let timer = new Timer();
 timer.start();
 initializePlayfield();
 
+let previousFrame;
+
 function gameloop(timeStamp) {
     currentTimeStamp = timeStamp;
 
@@ -513,8 +515,24 @@ function gameloop(timeStamp) {
             previousTimeStamp = timeStamp;
             activeTetromino = new tetromino(getNextTetromino());
             drawTetromino(); // draw active tetromino
+
+            previousFrame = timeStamp;
         }
         
+        if (timeStamp - previousFrame >= 60) {
+            // movement
+            if (arrowDown && isValidMove(activeTetromino.y + 1)) {
+                activeTetromino.y++;
+            }
+            else if (arrowLeft && isValidMove(activeTetromino.y, activeTetromino.x - 1)) {
+                activeTetromino.x--;
+            }
+            else if (arrowRight && isValidMove(activeTetromino.y, activeTetromino.x + 1)) {
+                activeTetromino.x++;
+            }
+            previousFrame = timeStamp;
+        }
+
         elapsed = timeStamp - previousTimeStamp;
 
         redrawFrame();
@@ -562,84 +580,86 @@ document.addEventListener("visibilitychange", function() {
     }
 });
 
+let arrowDown = false;
+let arrowLeft = false;
+let arrowRight = false;
+
+function keydown(event) {
+    if (gameOver) return;
+         
+    // toggle pause menu
+    if (event.key == "Escape") {
+        if (gamePaused) {
+            hidePauseMenu();
+        }
+        else {
+            showPauseMenu();
+        }
+    }
+
+    // do nothing if tetromino is already in "locked" state
+    if (activeTetromino.lock) return;
+    
+    if (!activeTetromino.lockDelayCooldown) {
+        if (event.key == "ArrowDown" ||
+            event.key == "ArrowLeft" ||
+            event.key == "ArrowRight" ||
+            event.key == "ArrowUp") {
+            activeTetromino.lockDelay = true; 
+            elapsed = 0;
+            delayMoveCount++;
+        previousTimeStamp = currentTimeStamp;
+        }
+    }
+
+    switch (event.key) {
+        // drop
+        case "ArrowDown":
+            arrowDown = true;
+            break;
+        // move left
+        case "ArrowLeft":
+            arrowLeft = true;
+            break;
+        // move right
+        case "ArrowRight":
+            arrowRight = true;
+            break;
+        // rotate
+        case "ArrowUp":
+            if (event.repeat) return;
+            transformed = rotate(activeTetromino.matrix);
+            if (isValidMove(activeTetromino.y,
+                            activeTetromino.x,
+                            transformed)) {
+                activeTetromino.matrix = transformed;
+            }
+            break;
+        // hard drop
+        case " ":
+            while (isValidMove(activeTetromino.y + 1)) {
+                activeTetromino.y++;
+            }
+            activeTetromino.lock = true;
+            break;
+        // hold
+        case "c": case "Shift":
+            hold();
+            break;
+    }
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/keyup_event
+function keyup(event) {
+    arrowDown = false;
+    arrowLeft = false;
+    arrowRight = false;
+}
+
 // https://stackoverflow.com/a/43418287
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
-window.addEventListener("keydown",
-    (event) => {
-        if (gameOver) return;
-
-        // do nothing if the event was already processed
-        if (event.defaultPrevented) return;
-
-        // toggle pause menu
-        if (event.key == "Escape") {
-            if (gamePaused) {
-                hidePauseMenu();
-            }
-            else {
-                showPauseMenu();
-            }
-        }
-
-        // do nothing if tetromino is already in "locked" state
-        if (activeTetromino.lock) return;
-
-        if (!activeTetromino.lockDelayCooldown) {
-            if (event.key == "ArrowDown" ||
-                event.key == "ArrowLeft" ||
-                event.key == "ArrowRight" ||
-                event.key == "ArrowUp") {
-                activeTetromino.lockDelay = true; 
-                elapsed = 0;
-                delayMoveCount++;
-            previousTimeStamp = currentTimeStamp;
-            }
-        }
-
-        switch (event.key) {
-            // drop
-            case "ArrowDown":
-                if (isValidMove(activeTetromino.y + 1)) {
-                    activeTetromino.y++;
-                }
-                break;
-            // move left
-            case "ArrowLeft":
-                if (isValidMove(activeTetromino.y, activeTetromino.x - 1)) {
-                    activeTetromino.x--;
-                }
-                break;
-            // move right
-            case "ArrowRight":
-                if (isValidMove(activeTetromino.y, activeTetromino.x + 1)) {
-                    activeTetromino.x++;
-                }
-                break;
-            // rotate
-            case "ArrowUp":
-                if (event.repeat) return;
-                transformed = rotate(activeTetromino.matrix);
-                if (isValidMove(activeTetromino.y,
-                                activeTetromino.x,
-                                transformed)) {
-                    activeTetromino.matrix = transformed;
-                }
-                break;
-            // hard drop
-            case " ":
-                while (isValidMove(activeTetromino.y + 1)) {
-                    activeTetromino.y++;
-                }
-                activeTetromino.lock = true;
-                break;
-            // hold
-            case "c": case "Shift":
-                hold();
-                break;
-        }
-
-    }
-)
+window.addEventListener("keydown", keydown);
+window.addEventListener("keyup", keyup);
 
 animation = requestAnimationFrame(gameloop);
 
