@@ -13,19 +13,19 @@ body {
     color: white;
 }
 
-.middle {
+.center {
     border: 1px solid rgb(100, 100, 100);
 }
 
-.left {
+.left-panel {
     float: right;
 }
 
-.right {
+.right-panel {
     float: left;
 }
 
-.left, .right {
+.left-panel, .right-panel {
     padding: 20px;
 }
 
@@ -63,11 +63,6 @@ body {
     font-size: 3.5vh;
 }
 
-#txt-hold,
-#txt-next {
-    text-align: center;
-}
-
 #playfield {
     z-index: 1;
 }
@@ -77,8 +72,7 @@ body {
     z-index: 0;
 }
 
-#pause-menu,
-#game-over-screen {
+.screen {
     display: none;
     position: absolute;
     z-index: 2;
@@ -91,15 +85,17 @@ body {
     font-size: 7vh;
 }
 
-#pause-menu-content,
-#game-over-screen-content {
+.menu {
     position: relative;
     top: 23vh;
     margin: auto;
 }
 
-#pause-menu button,
-#game-over-screen button {
+.text {
+    text-align: center;
+}
+
+.button {
     display: block;
     margin: 20px auto;
     border: none;
@@ -109,8 +105,7 @@ body {
     font-size: 3.5vh;
 }
 
-#pause-menu button:hover,
-#game-over-screen button:hover {
+.menu button:hover {
     color: lightgrey;
 }
 

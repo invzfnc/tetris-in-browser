@@ -449,14 +449,14 @@ function quitToTitle() {
 
 function showPauseMenu() {
     gamePaused = true;
-    document.getElementById("pause-menu").style.display = "block";
+    document.getElementById("pause-screen").style.display = "block";
     timer.stop();
     backgroundMusic.pause();
 }
 
 function hidePauseMenu() {
     gamePaused = false;
-    document.getElementById("pause-menu").style.display = "none";
+    document.getElementById("pause-screen").style.display = "none";
     timer.start();
     backgroundMusic.play();
 }

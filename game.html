@@ -11,9 +11,10 @@
         <audio id="background-music" loop autoplay>
             <source src="assets/music.mp3">
         </audio>
+
         <!-- centering and layering canvas: https://stackoverflow.com/a/17349259-->
-        <div class="canvas left">
-            <div id="icon"><img src="assets/tetris-icon.png"/></div>
+        <div class="left-panel">
+            <div id="icon"><img src="assets/icon.png"/></div>
 
             <div id="instructions">
                 <p><b>Controls</b></p>
@@ -33,32 +34,32 @@
             </div>
         </div>
 
-        <div class="canvas middle">
+        <div class="center">
             <canvas id="grids"></canvas>
             <canvas id="playfield"></canvas>
         </div>
 
-        <div class="canvas right">
-            <p id="txt-hold">HOLD</p>
+        <div class="right-panel">
+            <p class="text" id="txt-hold">HOLD</p>
             <canvas id="hold-queue"></canvas>
-            <p id="txt-next">NEXT</p>
+            <p class="text" id="txt-next">NEXT</p>
             <canvas id="preview-pane"></canvas>
         </div>
 
-        <div id="pause-menu">
-            <div id="pause-menu-content">
+        <div class="screen" id="pause-screen">
+            <div class="menu" id="pause-menu">
                 <p>PAUSED</p>
-                <button id="btn-resume">RESUME</button>
-                <button id="btn-restart">RESTART</button>
-                <button id="btn-quit">QUIT TO TITLE</button>
+                <button class="button" id="btn-resume">RESUME</button>
+                <button class="button" id="btn-restart">RESTART</button>
+                <button class="button" id="btn-quit">QUIT TO TITLE</button>
             </div>
         </div>
 
-        <div id="game-over-screen">
-            <div id="game-over-screen-content">
+        <div class="screen" id="game-over-screen">
+            <div class="menu" id="game-over-menu">
                 <p>GAME OVER</p>
-                <button class="buttons" id="btn-restart1">RESTART</button>
-                <button id="btn-quit1">QUIT TO TITLE</button>
+                <button class="button" id="btn-restart1">RESTART</button>
+                <button class="button" id="btn-quit1">QUIT TO TITLE</button>
             </div>
         </div>
     </body>
