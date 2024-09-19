@@ -12,13 +12,13 @@ let ctxPlayfield = playfield.getContext("2d");
 let grids = document.getElementById("grids");
 let ctxGrids = grids.getContext("2d");
 
-let holdQueueBox = document.getElementById("holdQueue");
+let holdQueueBox = document.getElementById("hold-queue");
 let ctxHoldQueue = holdQueueBox.getContext("2d");
 
-let previewPane = document.getElementById("previewPane")
+let previewPane = document.getElementById("preview-pane")
 let ctxPreviewPane = previewPane.getContext("2d");
 
-let backgroundMusic = document.getElementById("backgroundMusic");
+let backgroundMusic = document.getElementById("background-music");
 
 // 10*20 grids with each of them sized 35
 const gridRows = 20;
@@ -409,7 +409,7 @@ function redrawFrame() {
     drawTetromino(); // draw active tetromino
     drawPreviewPane(); // draw the next tetrominos
     if (holdQueue) drawHoldQueue(); // draw hold queue
-    document.getElementById("linesCleared").textContent = linesCleared; // update scores
+    document.getElementById("lines-cleared").textContent = linesCleared; // update scores
     document.getElementById("level").textContent = level;
 }
 
@@ -429,7 +429,7 @@ function resetGame() {
 
     // restart button from game over screen
     if (gameOver) {
-        document.getElementById("gameOverScreen").style.display = "none";
+        document.getElementById("game-over-screen").style.display = "none";
         gameOver = false;
         gamePaused = false;
         timer.start();
@@ -449,25 +449,25 @@ function quitToTitle() {
 
 function showPauseMenu() {
     gamePaused = true;
-    document.getElementById("pauseMenu").style.display = "block";
+    document.getElementById("pause-menu").style.display = "block";
     timer.stop();
     backgroundMusic.pause();
 }
 
 function hidePauseMenu() {
     gamePaused = false;
-    document.getElementById("pauseMenu").style.display = "none";
+    document.getElementById("pause-menu").style.display = "none";
     timer.start();
     backgroundMusic.play();
 }
 
 // https://stackoverflow.com/a/62117526
 // define button actions
-document.getElementById("btnResume").addEventListener("click", hidePauseMenu);
-document.getElementById("btnRestart").addEventListener("click", resetGame);
-document.getElementById("btnRestart1").addEventListener("click", resetGame);
-document.getElementById("btnQuit").addEventListener("click", quitToTitle);
-document.getElementById("btnQuit1").addEventListener("click", quitToTitle);
+document.getElementById("btn-resume").addEventListener("click", hidePauseMenu);
+document.getElementById("btn-restart").addEventListener("click", resetGame);
+document.getElementById("btn-restart1").addEventListener("click", resetGame);
+document.getElementById("btn-quit").addEventListener("click", quitToTitle);
+document.getElementById("btn-quit1").addEventListener("click", quitToTitle);
 
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
@@ -503,7 +503,7 @@ function gameloop(timeStamp) {
     currentTimeStamp = timeStamp;
 
     if (gameOver) {
-        document.getElementById("gameOverScreen").style.display = "block";
+        document.getElementById("game-over-screen").style.display = "block";
         backgroundMusic.pause();
         gamePaused = true;
     }
@@ -543,7 +543,7 @@ function gameloop(timeStamp) {
             }
         }
 
-        document.getElementById("timeElapsed").textContent = timer.timeElapsed;
+        document.getElementById("time-elapsed").textContent = timer.timeElapsed;
     }
     
     animation = requestAnimationFrame(gameloop);

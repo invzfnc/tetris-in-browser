@@ -8,7 +8,7 @@
         <script src="scripts/app.js"></script>
     </head>
     <body>
-        <audio id="backgroundMusic" loop autoplay>
+        <audio id="background-music" loop autoplay>
             <source src="assets/music.mp3">
         </audio>
         <!-- centering and layering canvas: https://stackoverflow.com/a/17349259-->
@@ -28,8 +28,8 @@
 
             <div id="scores">
                 <p><span>Level: </span><span id="level">1</span></p>
-                <p><span>Lines cleared: </span><span id="linesCleared">0</span></p>
-                <p><span>Time elapsed: </span><p><span id="timeElapsed">0</span></p></p>
+                <p><span>Lines cleared: </span><span id="lines-cleared">0</span></p>
+                <p><span>Time elapsed: </span><p><span id="time-elapsed">0</span></p></p>
             </div>
         </div>
 
@@ -39,26 +39,26 @@
         </div>
 
         <div class="canvas right">
-            <p id="holdText">HOLD</p>
-            <canvas id="holdQueue"></canvas>
-            <p id="nextText">NEXT</p>
-            <canvas id="previewPane"></canvas>
+            <p id="txt-hold">HOLD</p>
+            <canvas id="hold-queue"></canvas>
+            <p id="txt-next">NEXT</p>
+            <canvas id="preview-pane"></canvas>
         </div>
 
-        <div id="pauseMenu">
-            <div id="pauseMenuContent">
+        <div id="pause-menu">
+            <div id="pause-menu-content">
                 <p>PAUSED</p>
-                <button id="btnResume">RESUME</button>
-                <button id="btnRestart">RESTART</button>
-                <button id="btnQuit">QUIT TO TITLE</button>
+                <button id="btn-resume">RESUME</button>
+                <button id="btn-restart">RESTART</button>
+                <button id="btn-quit">QUIT TO TITLE</button>
             </div>
         </div>
 
-        <div id="gameOverScreen">
-            <div id="gameOverScreenContent">
+        <div id="game-over-screen">
+            <div id="game-over-screen-content">
                 <p>GAME OVER</p>
-                <button id="btnRestart1">RESTART</button>
-                <button id="btnQuit1">QUIT TO TITLE</button>
+                <button class="buttons" id="btn-restart1">RESTART</button>
+                <button id="btn-quit1">QUIT TO TITLE</button>
             </div>
         </div>
     </body>

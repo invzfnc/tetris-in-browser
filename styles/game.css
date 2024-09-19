@@ -32,8 +32,8 @@ body {
 #icon,
 #instructions,
 #scores,
-#holdQueue,
-#previewPane {
+#hold-queue,
+#preview-pane {
     box-sizing: border-box;
     padding: 2.5vh;
     border: 1px solid rgb(100, 100, 100);
@@ -59,12 +59,12 @@ body {
     height: 26vh;
 }
 
-#timeElapsed {
+#time-elapsed {
     font-size: 3.5vh;
 }
 
-#holdText,
-#nextText {
+#txt-hold,
+#txt-next {
     text-align: center;
 }
 
@@ -77,8 +77,8 @@ body {
     z-index: 0;
 }
 
-#pauseMenu,
-#gameOverScreen {
+#pause-menu,
+#game-over-screen {
     display: none;
     position: absolute;
     z-index: 2;
@@ -91,15 +91,15 @@ body {
     font-size: 7vh;
 }
 
-#pauseMenuContent,
-#gameOverScreenContent {
+#pause-menu-content,
+#game-over-screen-content {
     position: relative;
     top: 23vh;
     margin: auto;
 }
 
-#pauseMenu button,
-#gameOverScreen button {
+#pause-menu button,
+#game-over-screen button {
     display: block;
     margin: 20px auto;
     border: none;
@@ -109,8 +109,8 @@ body {
     font-size: 3.5vh;
 }
 
-#pauseMenu button:hover,
-#gameOverScreen button:hover {
+#pause-menu button:hover,
+#game-over-screen button:hover {
     color: lightgrey;
 }
 
