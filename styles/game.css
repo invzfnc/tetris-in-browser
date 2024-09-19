@@ -13,30 +13,30 @@ body {
     color: white;
 }
 
-.middle {
-    border: 1px solid rgb(100, 100, 100);
+.center {
+    border: 0.2vh solid rgb(100, 100, 100);
 }
 
-.left {
+.left-panel {
     float: right;
 }
 
-.right {
+.right-panel {
     float: left;
 }
 
-.left, .right {
-    padding: 20px;
+.left-panel, .right-panel {
+    padding: 2vw;
 }
 
 #icon,
 #instructions,
 #scores,
-#holdQueue,
-#previewPane {
+#hold-queue,
+#preview-pane {
     box-sizing: border-box;
     padding: 2.5vh;
-    border: 1px solid rgb(100, 100, 100);
+    border: 0.2vh solid rgb(100, 100, 100);
 }
 
 #icon {
@@ -59,13 +59,8 @@ body {
     height: 26vh;
 }
 
-#timeElapsed {
+#time-elapsed {
     font-size: 3.5vh;
-}
-
-#holdText,
-#nextText {
-    text-align: center;
 }
 
 #playfield {
@@ -77,8 +72,7 @@ body {
     z-index: 0;
 }
 
-#pauseMenu,
-#gameOverScreen {
+.screen {
     display: none;
     position: absolute;
     z-index: 2;
@@ -91,17 +85,19 @@ body {
     font-size: 7vh;
 }
 
-#pauseMenuContent,
-#gameOverScreenContent {
+.menu {
     position: relative;
     top: 23vh;
     margin: auto;
 }
 
-#pauseMenu button,
-#gameOverScreen button {
+.text {
+    text-align: center;
+}
+
+.button {
     display: block;
-    margin: 20px auto;
+    margin: 3vh auto;
     border: none;
     background-color: transparent;
     color: white;
@@ -109,8 +105,7 @@ body {
     font-size: 3.5vh;
 }
 
-#pauseMenu button:hover,
-#gameOverScreen button:hover {
+.menu button:hover {
     color: lightgrey;
 }
 
