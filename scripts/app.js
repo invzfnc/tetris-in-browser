@@ -6,6 +6,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
+/* elements */
 let playfield = document.getElementById("playfield");
 let ctxPlayfield = playfield.getContext("2d");
 
@@ -20,6 +21,7 @@ let ctxPreviewPane = previewPane.getContext("2d");
 
 let backgroundMusic = document.getElementById("background-music");
 
+/* constants */
 // 10*20 grids with each of them sized 35
 const gridRows = 20;
 const gridColumns = 10;
@@ -27,15 +29,17 @@ const gridColumns = 10;
 // number of pieces to show in preview pane
 const previewNumber = 3;
 
+// in game settings
+const lockDelayMaxCount = 5; // maximum moves before "locked"
+const speedIncreaseConstant = 0.8;
+const initialSpeed = 400; // tetromino falls every x millisecond
+
 // single grid
 let gridSize;
 computeSize();
 
-// detect window size change
-// https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event
-window.addEventListener("resize", resize);
-
-// checks resolution on different screens
+// compute the dimension of elements
+// website that checks resolution on different screens:
 // https://www.jeffersonscher.com/res/resolution.php
 function computeSize() {
     // playfield takes up 80% of height
@@ -53,11 +57,6 @@ function computeSize() {
 
     previewPane.width = 4 * gridSize;
     previewPane.height = 4 * previewNumber * gridSize - gridSize;
-}
-
-function resize() {
-    computeSize();
-    redrawFrame();
 }
 
 // 2D array/matrix to store playfield state
@@ -413,6 +412,13 @@ function redrawFrame() {
     document.getElementById("level").textContent = level;
 }
 
+// recompute dimension of elements and redraw them
+function resize() {
+    computeSize();
+    redrawFrame();
+}
+
+// reset states of game/restart
 function resetGame() {
     initializePlayfield();
     tetrominoSequence = [];
@@ -447,6 +453,7 @@ function quitToTitle() {
     location.href = "index.html";
 }
 
+// unhide pause menu, pause background music and timer
 function showPauseMenu() {
     gamePaused = true;
     document.getElementById("pause-screen").style.display = "block";
@@ -454,20 +461,13 @@ function showPauseMenu() {
     backgroundMusic.pause();
 }
 
+// hide pause menu, show resume background music and timer
 function hidePauseMenu() {
     gamePaused = false;
     document.getElementById("pause-screen").style.display = "none";
     timer.start();
     backgroundMusic.play();
 }
-
-// https://stackoverflow.com/a/62117526
-// define button actions
-document.getElementById("btn-resume").addEventListener("click", hidePauseMenu);
-document.getElementById("btn-restart").addEventListener("click", resetGame);
-document.getElementById("btn-restart1").addEventListener("click", resetGame);
-document.getElementById("btn-quit").addEventListener("click", quitToTitle);
-document.getElementById("btn-quit1").addEventListener("click", quitToTitle);
 
 // requestAnimationFrame for game loop
 // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
@@ -485,9 +485,6 @@ let gamePaused = false; // if game is paused
 let holdQueue = undefined; // stores held tetromino
 let holdQueueLock = false; // locks hold function if true
 
-const lockDelayMaxCount = 5; // maximum moves before "locked"
-const speedIncreaseConstant = 0.8;
-const initialSpeed = 400; // tetromino falls every x millisecond
 let fallingSpeed = initialSpeed;
 let delayMoveCount = 0; // move count during delay
 let elapsed = 0;
@@ -497,8 +494,10 @@ let linesCleared = 0;
 let level = 1;
 let timer = new Timer();
 timer.start();
+
 initializePlayfield();
 
+// main loop for the game
 function gameloop(timeStamp) {
     currentTimeStamp = timeStamp;
 
@@ -549,6 +548,21 @@ function gameloop(timeStamp) {
     animation = requestAnimationFrame(gameloop);
 }
 
+/* event listeners */
+// define button actions
+// https://stackoverflow.com/a/62117526
+document.getElementById("btn-resume").addEventListener("click", hidePauseMenu);
+document.getElementById("btn-restart").addEventListener("click", resetGame);
+document.getElementById("btn-restart1").addEventListener("click", resetGame);
+document.getElementById("btn-quit").addEventListener("click", quitToTitle);
+document.getElementById("btn-quit1").addEventListener("click", quitToTitle);
+
+// detect window size change
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event
+window.addEventListener("resize", resize);
+
+// detect window visibility
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event#pausing_music_on_transitioning_to_hidden
 document.addEventListener("visibilitychange", function() {
     if (document.hidden) {
         timer.stop();
@@ -562,6 +576,7 @@ document.addEventListener("visibilitychange", function() {
     }
 });
 
+// listen to keypresses
 // https://stackoverflow.com/a/43418287
 // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
 window.addEventListener("keydown",
