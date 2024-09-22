@@ -17,7 +17,6 @@ A running instance is available through this [link](https://eve-1010.github.io/t
 ## Preview
 
 ![Preview of gameplay](docs/preview-1.gif)
-![Preview of gameplay](docs/preview-2.gif)
 
 ## Controls
 
