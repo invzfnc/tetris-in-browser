@@ -14,6 +14,11 @@ A classic Tetris game built using HTML, CSS, and vanilla Javascript.
 
 A running instance is available through this [link](https://eve-1010.github.io/tetris-in-browser/index.html).
  
+## Preview
+
+![Preview of gameplay](docs/preview-1.gif)
+![Preview of gameplay](docs/preview-2.gif)
+
 ## Controls
 
 This game supports keyboard input only. Use the following keys to control the tetrominos:
