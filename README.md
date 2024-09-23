@@ -9,6 +9,7 @@ A classic Tetris game built using HTML, CSS, and vanilla Javascript.
 - **Preview pane**: View the next 3 upcoming tetrominos.
 - **Ghost piece**: A shadow displaying where the current piece will land.
 - **Hold piece**: Temporarily store a piece for later use.
+- **Timer**: Shows time elapsed.
 
 ## Usage
 
