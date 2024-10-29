@@ -13,7 +13,7 @@ A classic Tetris game built using HTML, CSS, and vanilla Javascript.
 
 ## Usage
 
-A running instance is available through this [link](https://eve-1010.github.io/tetris-in-browser/index.html).
+A running instance is available through this [link](https://invzfnc.github.io/tetris-in-browser/index.html).
  
 ## Preview
 
@@ -35,4 +35,4 @@ This game supports keyboard input only. Use the following keys to control the te
 
 ## License
 
-This software is licensed under the [MIT License](https://github.com/eve-1010/tetris-in-browser/blob/main/LICENSE) © [Cha](https://github.com/eve-1010)
+This software is licensed under the [MIT License](https://github.com/invzfnc/tetris-in-browser/blob/main/LICENSE) © [Cha](https://github.com/invzfnc)
